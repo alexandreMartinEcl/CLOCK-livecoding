@@ -1,18 +1,29 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { checkIdentity } from './repository/tools.js';
 
 class App extends Component {
-  render() {
+    get_token(){
+        let search = window.location.search;
+        let args = search.split("?");
+        let dctArgs = {};
+
+        args.forEach((str)=>{
+            if(str.split("=").length === 2){
+                let key = str.split("=")[0];
+                let value = str.split("=")[1];
+                dctArgs[key] = value;
+            }
+        });
+
+        return dctArgs["token"];
+      }
+
+
+    render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        Checking your identity
+        {checkIdentity(true)}
       </div>
     );
   }
