@@ -12,11 +12,20 @@ class IdentityResp extends React.PureComponent {
 
   componentWillMount(){
     let token = getToken()
-    this.userData = checkIdentity(token);
+    checkIdentity(this, token).then( data => {
+      console.log(data);
+      this.userData = data;
+    });
   }
 
+  setUserData(data){
+    this.userData = data;
+  }
 
   render() {
+    return 
+    <div>{this.userData.authentified}</div>;
+/*
     if(this.userData.authentified){
       console.log("ok pourtant");
       return <IsOk/>;
@@ -24,6 +33,7 @@ class IdentityResp extends React.PureComponent {
     else{
       return <IsNotOk/>;
     }
+*/
   }
 }
 
