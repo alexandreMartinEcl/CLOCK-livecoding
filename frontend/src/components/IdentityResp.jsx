@@ -1,11 +1,23 @@
 import React from 'react';
-import { checkIdentity } from '../repository/tools.js';
+import { checkIdentity, getToken } from '../repository/tools.js';
 import IsOk from "./IsOk";
 import IsNotOk from "./IsNotOk";
 
 class IdentityResp extends React.PureComponent {
+  userData = {
+    authentified: false,
+    name: ""
+  };
+
+
+  componentWillMount(){
+    let token = getToken()
+    this.userData = checkIdentity(token);
+  }
+
+
   render() {
-    if(checkIdentity(false)){
+    if(this.userData.authentified){
       console.log("ok pourtant");
       return <IsOk/>;
     }
