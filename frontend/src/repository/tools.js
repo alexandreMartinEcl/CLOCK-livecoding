@@ -1,6 +1,8 @@
 import IsOk from "../components/IsOk";
 import IsNotOk from "../components/IsNotOk";
 
+import agent from 'superagent';
+
 export const checkIdentity = (test) => {
   try {
       if(test){
