@@ -1,5 +1,6 @@
 import React from 'react';
-import { checkIdentitySync, checkIdentityAsync, getToken } from '../repository/tools.js';
+import { checkIdentitySync,  getToken } from '../repository/tools.js';
+//import { checkIdentityAsync } from '../repository/tools.js';
 import IsOk from "./IsOk";
 import IsNotOk from "./IsNotOk";
 

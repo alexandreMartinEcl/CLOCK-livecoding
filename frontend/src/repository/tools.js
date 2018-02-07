@@ -1,6 +1,3 @@
-import IsOk from "../components/IsOk";
-import IsNotOk from "../components/IsNotOk";
-
 import agent from 'superagent';
 //const backUrl = "whoknows.com"
 const backUrl = "https://api.motaword.com/formats"
@@ -10,7 +7,7 @@ export const checkIdentitySync = (token) => {
 //    body = await agent.get(backUrl).query({accessToken: token});
 //    return res.body;
 
-    if(token == "test"){
+    if(token === "test"){
         return {authentified: true, name: "Albert"};
     }
     else{
