@@ -1,5 +1,5 @@
 import React from 'react';
-import { checkIdentity, getToken } from '../repository/tools.js';
+import { checkIdentitySync, checkIdentityAsync, getToken } from '../repository/tools.js';
 import IsOk from "./IsOk";
 import IsNotOk from "./IsNotOk";
 
@@ -12,10 +12,13 @@ class IdentityResp extends React.PureComponent {
 
   componentWillMount(){
     let token = getToken()
-    checkIdentity(this, token).then( data => {
+/*    
+    checkIdentityAsync(this, token).then( data => {
       console.log(data);
-      this.userData = data;
+      //this.userData = data;
     });
+*/
+    this.userData = checkIdentitySync(token);
   }
 
   setUserData(data){
@@ -23,9 +26,9 @@ class IdentityResp extends React.PureComponent {
   }
 
   render() {
-    return 
-    <div>{this.userData.authentified}</div>;
-/*
+//    return (
+//    <div>{this.userData.authentified}</div>
+
     if(this.userData.authentified){
       console.log("ok pourtant");
       return <IsOk/>;
@@ -33,7 +36,7 @@ class IdentityResp extends React.PureComponent {
     else{
       return <IsNotOk/>;
     }
-*/
+
   }
 }
 
