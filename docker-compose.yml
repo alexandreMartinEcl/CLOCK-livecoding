@@ -1,16 +1,16 @@
 version: "3"
 services:
   web:
-    image: ebm1718travis/ebm-boilerplate:latest
+    image: ebm1718travis/clock-livecoding:latest
     # depends_on:
     #   - mongodb
     environment:
-      - MONGODB_URI=mongodb://mongodb/ebm-boilerplate
+      - MONGODB_URI=mongodb://mongodb/clock-livecoding
     networks:
       local:
       ebm-filrouge:
         aliases:
-          - ebm-boilerplate
+          - clock-livecoding
   # mongodb:
   #   image: mongo
   #   networks:
