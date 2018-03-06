@@ -6,16 +6,22 @@ services:
     #   - mongodb
     environment:
       - MONGODB_URI=mongodb://mongodb/clock-livecoding
+      - SEED_USERNAME=root
+      - SEED_PASSWORD=root
     networks:
       local:
       ebm-filrouge:
         aliases:
           - clock-livecoding
-  # mongodb:
-  #   image: mongo
-  #   networks:
-  #     - local
+    mongodb:
+        image: mongo
+        networks:
+          - local
+        volumes:
+          - mongo-volume:/data/db
 networks:
   local:
   ebm-filrouge:
     external: true 
+volumes:
+  mongo-volume:

@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate-backend",
+  "name": "clock-livecoding-backend",
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
@@ -12,11 +12,11 @@
   "keywords": [
     "react",
     "express",
-    "boilerplate"
+    "clock-livecoding"
   ],
   "license": "MIT",
   "apidoc": {
-    "title": "ApiDoc pour le projet Boilerplate",
+    "title": "ApiDoc pour le projet CLOCK-livecoding",
     "url": "/api",
     "sampleUrl": "http://localhost:4000/api"
   },
