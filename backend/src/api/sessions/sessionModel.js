@@ -1,9 +1,18 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
+
+const randomValueBase64 = (len) => {
+  const randBytes = crypto.randomBytes(Math.ceil((len * 3) / 4));
+  return randBytes.toString('base64')
+    .slice(0, len)
+    .replace(/\+/g, '0')
+    .replace(/\//g, '0');
+}; // randomValueBase64
 
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  id: {
+  userid: {
     type: String,
     required: true,
   },
@@ -15,7 +24,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-});
+}); // userSchema
 
 const codeUserWithinSession = new Schema({
   user: {
@@ -34,29 +43,25 @@ const codeUserWithinSession = new Schema({
     type: String,
     default: '',
   },
-});
+}); // codeUserWithinSession
 
 const sessionSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
   hash: {
     type: String,
-    required: true,
+    default: randomValueBase64(6),
   },
   created: {
     type: Date,
     default: Date.now(),
   },
-  creator: {
-    type: userSchema,
+  creatorid: {
+    type: String,
     required: true,
   },
   users: {
     type: [codeUserWithinSession],
     required: false,
   },
-});
+}); // sessionSchema
 
-module.exports = mongoose.model('Evaluation', sessionSchema);
+module.exports = mongoose.model('Session', sessionSchema);

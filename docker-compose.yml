@@ -13,12 +13,12 @@ services:
       ebm-filrouge:
         aliases:
           - clock-livecoding
-    mongodb:
-        image: mongo
-        networks:
-          - local
-        volumes:
-          - mongo-volume:/data/db
+  mongodb:
+      image: mongo
+      networks:
+        - local
+      volumes:
+        - mongo-volume:/data/db
 networks:
   local:
   ebm-filrouge:
