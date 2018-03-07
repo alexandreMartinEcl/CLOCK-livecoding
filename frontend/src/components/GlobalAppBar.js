@@ -7,12 +7,17 @@ import {Apps as AppsIcon} from 'material-ui-icons';
 
 import AppsMenu from './AppsMenu';
 
+import logo from '../images/logo.png';
+
 const styles = {
   appBarWithTabBar: {
     boxShadow: 'unset'
   },
   flex: {
     flex: 1,
+  },
+  icon:  {
+    margin: '10px'
   }
 };
 
@@ -29,7 +34,7 @@ class GlobalAppBar extends PureComponent {
 
   state = {
     appsMenuOpen: false,
-    anchorEl: null,
+    anchorEl: null
   };
 
   button = null;
@@ -55,6 +60,8 @@ class GlobalAppBar extends PureComponent {
     return (
       <AppBar position="absolute" className={appBarClasses}>
         <Toolbar>
+          <img src={logo} alt="ClockLC-logo" width="50px" height="50px" className={classes.icon} />        
+          
           <Typography variant="title" color="inherit" className={classes.flex}>
             {this.props.appTitle}
           </Typography>

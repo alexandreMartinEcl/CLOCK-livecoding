@@ -13,11 +13,13 @@ module.exports.findAllUsersOfSession = (req, res) => {
 }; // findAllUsersOfSession
 
 module.exports.findUserCodeWithinSession = (req, res) => {
+  console.log(`Getting code from user: ${req.params.userid} from session: + ${req.params.hash}`);
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
     }
-    const users = session[0].users.filter(obj => obj.user.lastName === req.params.lastName)[0];
+    // demo update
+    const users = session[0].users.filter(obj => obj.user.userid === req.params.userid)[0];
     const result = {
       html: users.html,
       css: users.css,

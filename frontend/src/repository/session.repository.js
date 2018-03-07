@@ -1,15 +1,18 @@
+//import agent from '../services/http';
 
-//const backUrl = '//oklm.ebm.nymous.io/api/session';
+//const getUrl = '/api/sessions';
+//const createUrl = '/api/sessions';
 
 export async function reqCreateSession(userId) {
     console.log("Creating session");
-    //const req = agent.post(backUrl).send({userId: userId});
+//    const req = agent.post(createUrl).send({creatorid: userId});
     const req = localCreate();
     try {
         const res = await req;
         console.log("Session created");
-        console.log(res.sessionId);
+        console.log(res);
         return res;
+//        return res.body;
     }
     catch(err) {
       console.error(err);
@@ -18,7 +21,7 @@ export async function reqCreateSession(userId) {
 
 export async function reqGetSession(sessionId, userId) {
     console.log("Getting session: " + sessionId + " with user: " + userId);
-    //const req = agent.get(backUrl).query({sessionId: sessionId, userId: userId});
+//    const req = agent.get(getUrl + "/" + sessionId + "/" + userId);
     const req = localGet(sessionId);
     try {
         const res = await req;
@@ -49,15 +52,21 @@ function localGet(sessionId){
             setTimeout(() => {
                 resolve({
                     status: "ok",
-                    users: [
-                        {
-                            name: "Rémy",
-                            id:"remy"
-                        }
-                    ],
-                    htmlTxt: "<h1 class=title >Hello</h1>",
-                    cssTxt: ".title{ background-color: blue; }",
-                    jsTxt: "Some script"
+                    session: {
+                        hash: "test",
+                        users: [
+                            {
+                                lastName: "Rémy",
+                                firstName: "Rémy",
+                                userId:"remy"
+                            }
+                        ],
+                    },
+                    code: {
+                        html: "<h1 class=title >Hello</h1>",
+                        css: ".title{ background-color: blue; }",
+                        js: "Some script"
+                    }
                 });
             }, 1000);
         });

@@ -24,6 +24,7 @@ module.exports.findOne = (req, res) => {
 }; // findOne
 
 module.exports.create = (req, res) => {
+  console.log(`Creating session with user: ${req.body.creatorid}`);
   const creator = req.body.creatorid;
   const session = new Session({ creatorid: creator });
   session.save((err) => {

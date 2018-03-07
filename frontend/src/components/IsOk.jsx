@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { reqCreateSession, reqGetSession } from '../repository/session.repository';
-import {withStyles} from 'material-ui';
+import { Button, withStyles } from 'material-ui';
 import TextField from 'material-ui/TextField';
 
 const styles = theme => ({
@@ -29,6 +29,9 @@ const styles = theme => ({
     maxWidth: '400px',
     padding: '13px'
   },
+  btnLine: {
+    margin: '15px'
+  }
 });
 
 class IsOk extends React.PureComponent {
@@ -50,7 +53,7 @@ class IsOk extends React.PureComponent {
   getSession = async () => {
     const res = await reqGetSession(this.state.sessionId, "userid");
     if (res.status === "ok") {
-      this.props.contentOpenSession(res.htmlTxt, res.cssTxt, res.jsTxt, this.state.sessionId, res.users);
+      this.props.contentOpenSession(res.code.html, res.code.css, res.code.js, this.state.sessionId, res.session.users);
     } else {
       // add popup
       console.log("Lol");
@@ -73,7 +76,7 @@ class IsOk extends React.PureComponent {
         <div className={this.props.className}>
         <div className={this.props.classes.centerFrame}>
 
-          <p>Bienvenue {this.props.name} </p>
+          <p className={this.props.classes.whiteText}>Bienvenue {this.props.name} </p>
           <TextField
             label="Code de la session"
             id="margin-none"
@@ -85,8 +88,19 @@ class IsOk extends React.PureComponent {
             className={this.props.classes.textField}
             //helperText="Some important text"
           />
-          <button onClick={this.getSession} >Connect to session</button>
-          <button onClick={this.createSession} >New session</button>
+        
+        <div className={this.props.classes.btnLine}>
+          <Button variant="raised" color="secondary" onClick={this.getSession}>
+            Rejoindre une session
+          </Button>
+        </div>
+          
+        <div className={this.props.classes.btnLine}>
+          <Button variant="flat" color="secondary" onClick={this.createSession}>
+            Créer une session
+          </Button>
+        </div>
+        
         </div>
 
       </div>        
