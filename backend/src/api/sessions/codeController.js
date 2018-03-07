@@ -34,7 +34,7 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
       return res.send(err);
     }
     usersUpdate = Object.assign({}, session);
-    return usersUpdate.users.reduce((obj) => {
+    return usersUpdate.users.map((obj) => {
       if (obj.user.userid === req.params.userid) {
         const newUserWithCode = Object.assign({}, obj);
         newUserWithCode.html = req.params.code.html;
