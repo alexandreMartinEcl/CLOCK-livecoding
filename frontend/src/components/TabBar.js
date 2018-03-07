@@ -6,7 +6,13 @@ const styles = {};
 
 class TabBar extends PureComponent {
   static propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    labels: PropTypes.arrayOf(PropTypes.string),
+    handleTabChange: PropTypes.func
+  };
+
+  static defaultProps = {
+    labels: ["Onglet 1", "Onglet 2", "Onglet 3"]
   };
 
   state = {
@@ -15,6 +21,7 @@ class TabBar extends PureComponent {
 
   handleChange = (event, value) => {
     this.setState({selectedTab: value});
+    this.props.handleTabChange(value);
   };
 
   render() {
@@ -24,9 +31,9 @@ class TabBar extends PureComponent {
           value={this.state.selectedTab}
           onChange={this.handleChange}
           fullWidth>
-          <Tab label="Onglet 1"/>
-          <Tab label="Onglet 2"/>
-          <Tab label="Onglet 3"/>
+          <Tab label={this.props.labels[0]}/>
+          <Tab label={this.props.labels[1]}/>
+          <Tab label={this.props.labels[2]}/>
         </Tabs>
       </AppBar>
     );
