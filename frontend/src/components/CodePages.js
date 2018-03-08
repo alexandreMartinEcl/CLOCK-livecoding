@@ -1,6 +1,14 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, TextField } from 'material-ui';
+import { withStyles } from 'material-ui';
+
+import AceEditor from 'react-ace';
+
+import 'brace/mode/html';
+import 'brace/mode/css';
+import 'brace/mode/javascript';
+import 'brace/theme/tomorrow_night';
+import 'brace/ext/language_tools';
 
 import TabBar from './TabBar';
 
@@ -25,7 +33,8 @@ class CodePage extends PureComponent {
         className: PropTypes.string,
         htmlTxt: PropTypes.string,
         cssTxt: PropTypes.string,
-        jsTxt: PropTypes.string
+        jsTxt: PropTypes.string,
+        classes: PropTypes.object
     };
 
     static defaultProps = {
@@ -39,7 +48,8 @@ class CodePage extends PureComponent {
         htmlTxt: '',
         cssTxt: '',
         jsTxt: '',
-        selectedKey: 'htmlTxt'
+        selectedKey: 'htmlTxt',
+        selectedMode: 'html'
     };
 
     componentWillMount(){
@@ -51,22 +61,31 @@ class CodePage extends PureComponent {
         console.log("CodePages will mount with htmlTxt: " + this.state.htmlTxt);
     }
 
+    /*
     handleChange = (event) => {
 //        this.setState( {htmlTxt: event.target.value});
         this.setState( {[this.state.selectedKey]: event.target.value});
-    }    
+    } 
+    */   
 
+    handleChange = (code) => {
+        this.setState( {[this.state.selectedKey]: code});
+    } 
+    
     changeContent = (tabValue) => {
         console.log("Changed tab: " + tabValue)
         if (tabValue === 0){
             console.log("Changed for: html");
-            this.setState({selectedKey: "htmlTxt"});
+            this.setState({ selectedKey: "htmlTxt" });
+            this.setState({ selectedMode: "html" })
         } else if (tabValue === 1) {
             console.log("Changed for: css");
-            this.setState({selectedKey: "cssTxt"});
+            this.setState({ selectedKey: "cssTxt" });
+            this.setState({ selectedMode: "css" })
         } else if (tabValue === 2) {
             console.log("Changed for: js");
-            this.setState({selectedKey: "jsTxt"});
+            this.setState({ selectedKey: "jsTxt" });
+            this.setState({ selectedMode: "javascript" })
         }
     }
 
@@ -77,21 +96,26 @@ class CodePage extends PureComponent {
                 labels={["html", "css", "js"]}
                 handleTabChange={this.changeContent} 
                 />
-                <TextField
-                    label="Contenu"
-                    id="margin-none"
-                    value={this.state[this.state.selectedKey]}
-                    //defaultValue={this.state.selectedKey}
-                    onChange={this.handleChange}
-/*
-                    labelClassName={this.props.classes.whiteText}
-                    helperTextClassName={this.props.classes.whiteText}
-                    InputProps={{className: this.props.classes.whiteText}}
-                    className={this.props.classes.textField}
-                    //helperText="Some important text"
-*/
-                />
 
+                <AceEditor
+                mode={this.state.selectedMode}
+                theme="tomorrow_night"
+                name="codeEditor"
+                onChange={this.handleChange}
+                fontSize={14}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                value={this.state[this.state.selectedKey]}
+                setOptions={{
+                    enableBasicAutocompletion: true,
+                    enableLiveAutocompletion: true,
+                    enableSnippets: false,
+                    showLineNumbers: true,
+                    tabSize: 2,
+                }}
+                width={'100%'}
+                />
             </div>
         );
     }

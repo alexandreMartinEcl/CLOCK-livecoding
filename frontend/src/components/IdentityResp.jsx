@@ -32,8 +32,10 @@ class IdentityResp extends React.PureComponent {
   };
 
   state = {
-    userData: {
-      name: ""
+    user: {
+      firstName: "",
+      lastName: "",
+      userid: "",
     },
     authentified: false,
     requested: false,
@@ -44,8 +46,8 @@ class IdentityResp extends React.PureComponent {
   }
 
   async componentDidMount(){
-    const {userData, authentified} = await backendCheckUser();
-    this.setState({userData: userData, authentified: authentified});
+    const {user, authentified} = await backendCheckUser();
+    this.setState({user: user, authentified: authentified});
     this.setState({requested: true});
   }
 
@@ -59,9 +61,8 @@ class IdentityResp extends React.PureComponent {
     if(this.state.authentified){
       return (
         <IsOk 
-          name={this.state.userData.name} 
-          contentOpenSession={this.props.sessionFunc} 
-          
+          user={this.state.user} 
+          contentOpenSession={this.props.sessionFunc}
         />
       );
     } else {

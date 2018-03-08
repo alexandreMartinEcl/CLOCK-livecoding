@@ -38,7 +38,11 @@ class IsOk extends React.PureComponent {
   static propTypes = {
     className: PropTypes.string,
     classes: PropTypes.object.isRequired,
-    name: PropTypes.string,
+    user: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      userid: PropTypes.string,      
+    }).isRequired,
     contentOpenSession: PropTypes.func
   };
 
@@ -51,9 +55,9 @@ class IsOk extends React.PureComponent {
   }
 
   getSession = async () => {
-    const res = await reqGetSession(this.state.sessionId, "userid");
+    const res = await reqGetSession(this.state.sessionId, this.props.user.userid);
     if (res.status === "ok") {
-      this.props.contentOpenSession(res.code.html, res.code.css, res.code.js, this.state.sessionId, res.session.users);
+      this.props.contentOpenSession(res.code.html, res.code.css, res.code.js, res.session.hash, res.session.users);
     } else {
       // add popup
       console.log("Lol");
@@ -63,7 +67,7 @@ class IsOk extends React.PureComponent {
   createSession = async () => {
     const res = await reqCreateSession("userid");
     if (res.status === "ok") {
-      this.props.contentOpenSession("", "", "", res.sessionId, []);
+      this.props.contentOpenSession("", "", "", res.session.hash, []);
     } else {
       // add popup
       console.log("Lol");
@@ -76,7 +80,7 @@ class IsOk extends React.PureComponent {
         <div className={this.props.className}>
         <div className={this.props.classes.centerFrame}>
 
-          <p className={this.props.classes.whiteText}>Bienvenue {this.props.name} </p>
+          <p className={this.props.classes.whiteText}>Bienvenue {this.props.user.firstName + " " + this.props.user.lastName} </p>
           <TextField
             label="Code de la session"
             id="margin-none"
