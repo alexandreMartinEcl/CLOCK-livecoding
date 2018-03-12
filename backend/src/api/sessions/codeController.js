@@ -12,22 +12,27 @@ module.exports.findAllUsersOfSession = (req, res) => {
   });
 }; // findAllUsersOfSession
 
-module.exports.findUserCodeWithinSession = (req, res) => {
-  console.log(`Getting code from user: ${req.params.userid} from session: + ${req.params.hash}`);
+module.exports.findUserSessionInfo = (req, res) => {
+  console.log(`Getting all info relative to user ${req.params.userid} in session ${req.params.hash}`);
+  const result = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
     }
-    // demo update
-    const users = session[0].users.filter(obj => obj.user.userid === req.params.userid)[0];
-    const result = {
-      html: users.html,
-      css: users.css,
-      js: users.js,
-    };
-    return res.send(result);
+    result.users = [];
+    return session[0].users.map((usr) => {
+      if (usr.user.userid === req.params.userid) {
+        result.code = {
+          hmtl: usr.html,
+          css: usr.css,
+          js: usr.js,
+        };
+      }
+      return result.users.push(usr.user);
+    });
   });
-}; // findUserCodeWithinSession
+  return res.send(result);
+}; // findUserSessionInfo
 
 module.exports.putNewCodeForUserWithinSession = (req, res) => {
   let usersUpdate = {};
