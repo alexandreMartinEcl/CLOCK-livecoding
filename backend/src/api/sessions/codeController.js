@@ -5,17 +5,17 @@ module.exports = {};
 module.exports.findAllUsersOfSession = (req, res) => {
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
-      return res.json(err);
+      return res.send(err);
     }
     if (!session) {
       return res.status(401)
-        .json({
+        .send({
           success: false,
           msg: 'Session does not exist',
         });
     }
     const users = session[0].users.map(obj => obj.user);
-    return res.json({
+    return res.send({
       success: true,
       users,
     });
@@ -27,11 +27,11 @@ module.exports.findUserSessionInfo = (req, res) => {
   const result = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
-      return res.json(err);
+      return res.send(err);
     }
     if (!session) {
       return res.status(401)
-        .json({
+        .send({
           success: false,
           msg: 'Session does not exist',
         });
@@ -53,7 +53,7 @@ module.exports.findUserSessionInfo = (req, res) => {
       }
       return result.users.push(usr.user);
     });
-    return res.json({
+    return res.send({
       success: true,
       result,
     });
@@ -64,11 +64,11 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
   let usersUpdate = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
-      return res.json(err);
+      return res.send(err);
     }
     if (!session) {
       return res.status(401)
-        .json({
+        .send({
           success: false,
           msg: 'Session does not exist',
         });
@@ -92,16 +92,16 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
     { new: true },
     (err, session) => {
       if (err) {
-        return res.json(err);
+        return res.send(err);
       }
       if (!session) {
         return res.status(401)
-          .json({
+          .send({
             success: false,
             msg: 'Session does not exist',
           });
       }
-      return res.json({
+      return res.send({
         result: {
           success: true,
           session,
