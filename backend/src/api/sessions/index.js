@@ -11,7 +11,7 @@ router.get('/', sessionController.findAll);
 router.get('/:hash', sessionController.findOne);
 
 router.get('/users/:hash', codeController.findAllUsersOfSession);
-router.get('/code/:hash/:userid', codeController.findUserCodeWithinSession);
+router.get('/code/:hash/:userid', codeController.findUserSessionInfo);
 
 // post requests
 router.post('/', sessionController.create);
