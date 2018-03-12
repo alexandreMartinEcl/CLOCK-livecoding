@@ -12,7 +12,7 @@ class TabBar extends PureComponent {
   };
 
   static defaultProps = {
-    labels: ["Onglet 1", "Onglet 2", "Onglet 3"]
+    labels: ["User 1", "User 2", "User 3"]
   };
 
   state = {

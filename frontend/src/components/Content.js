@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui';
+import Chip from 'material-ui/Chip';
 
 import IdentityResp from './IdentityResp';
 import CodePages from './CodePages';
@@ -18,12 +19,16 @@ const styles = theme => ({
   content: {
     textAlign: 'center',
     paddingTop: theme.spacing.unit * 5,
+  },
+  chip: {
+    margin: '15px'
   }
 });
 
 class Content extends PureComponent {
   static propTypes = {
-    className: PropTypes.string
+    className: PropTypes.string,
+    classes: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
@@ -47,11 +52,11 @@ class Content extends PureComponent {
     if (this.state.sessionId.length > 0){
       return (
         <div className={this.props.className}>
-          Session {this.state.sessionId}
-          <CodePages 
+          <Chip label={`Session ${this.state.sessionId}`} className={this.props.classes.chip} />
+          <CodePages
           htmlTxt={this.state.htmlTxt}
           cssTxt={this.state.cssTxt}
-          jsTxt={this.state.jsTxt} 
+          jsTxt={this.state.jsTxt}
           />
         </div>
       );

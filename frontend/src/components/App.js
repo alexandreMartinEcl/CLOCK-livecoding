@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import './App.css';
 import theme from '../theme';
 import GlobalAppBar from './GlobalAppBar';
-import TabBar from './TabBar'
 import Content from './Content';
 
 const styles = theme => ({
@@ -36,8 +35,7 @@ class App extends Component {
       <div className={classes.root}>
         <MuiThemeProvider theme={theme}>
           <Reboot/>
-          <GlobalAppBar appTitle="CLOCK Live coding" hasTabBarBelow/>
-          <TabBar/>
+          <GlobalAppBar appTitle="CLOCK Live coding" />
           {/* You should work mainly in the Content component */}
           <Content className={classes.content}/>
         </MuiThemeProvider>

@@ -65,13 +65,13 @@ class CodePage extends PureComponent {
     handleChange = (event) => {
 //        this.setState( {htmlTxt: event.target.value});
         this.setState( {[this.state.selectedKey]: event.target.value});
-    } 
-    */   
+    }
+    */
 
     handleChange = (code) => {
         this.setState( {[this.state.selectedKey]: code});
-    } 
-    
+    }
+
     changeContent = (tabValue) => {
         console.log("Changed tab: " + tabValue)
         if (tabValue === 0){
@@ -92,9 +92,10 @@ class CodePage extends PureComponent {
   render() {
         return (
             <div className={this.props.className}>
-                <TabBar 
+                <TabBar/>
+                <TabBar
                 labels={["html", "css", "js"]}
-                handleTabChange={this.changeContent} 
+                handleTabChange={this.changeContent}
                 />
 
                 <AceEditor
