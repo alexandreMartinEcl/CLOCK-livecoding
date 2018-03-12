@@ -19,8 +19,21 @@ module.exports.findUserSessionInfo = (req, res) => {
     if (err) {
       return res.send(err);
     }
+    if (!session) {
+      return res.status(401)
+        .send({
+          success: false,
+          msg: 'Session does not exist',
+        });
+    }
+    result.success = true;
+    result.hash = session.hash;
+    result.creatorid = session.creatorid;
+    result.created = session.created;
+    result.name = session.name;
+
     result.users = [];
-    return session[0].users.map((usr) => {
+    session[0].users.map((usr) => {
       if (usr.user.userid === req.params.userid) {
         result.code = {
           hmtl: usr.html,
@@ -30,8 +43,8 @@ module.exports.findUserSessionInfo = (req, res) => {
       }
       return result.users.push(usr.user);
     });
+    return res.send(result);
   });
-  return res.send(result);
 }; // findUserSessionInfo
 
 module.exports.putNewCodeForUserWithinSession = (req, res) => {

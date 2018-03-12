@@ -58,6 +58,10 @@ const sessionSchema = new Schema({
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+    required: false,
+  },
   users: {
     type: [codeUserWithinSession],
     required: false,
