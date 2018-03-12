@@ -7,7 +7,14 @@ module.exports.findAll = (req, res) => {
     if (err) {
       return res.send(err);
     }
-    return res.json(sessions);
+    if (!sessions) {
+      return res.status(401)
+        .send({
+          success: false,
+          message: 'There are no sessions',
+        });
+    }
+    return res.send(sessions);
   });
 }; // findAll
 
@@ -18,7 +25,14 @@ module.exports.findOne = (req, res) => {
       if (err) {
         return res.send(err);
       }
-      return res.json(session);
+      if (!session) {
+        return res.status(401)
+          .send({
+            success: false,
+            message: 'Session does not exist',
+          });
+      }
+      return res.send(session);
     },
   );
 }; // findOne
@@ -29,9 +43,9 @@ module.exports.create = (req, res) => {
   const session = new Session({ creatorid: creator });
   session.save((err) => {
     if (err) {
-      return res.json(err);
+      return res.send(err);
     }
-    return res.json(session);
+    return res.send(session);
   });
 }; // create
 
@@ -55,9 +69,9 @@ module.exports.insertNewUser = (req, res) => {
     { runValidators: true },
     (err) => {
       if (err) {
-        return res.json(err);
+        return res.send(err);
       }
-      return res.json({
+      return res.send({
         userid,
         firstName,
         lastName,
@@ -86,9 +100,9 @@ module.exports.removeUser = (req, res) => {
     { runValidators: true },
     (err) => {
       if (err) {
-        return res.json(err);
+        return res.send(err);
       }
-      return res.json({
+      return res.send({
         userid,
         firstName,
         lastName,
@@ -102,9 +116,9 @@ module.exports.delete = (req, res) => {
     { hash: req.params.hash },
     (err) => {
       if (err) {
-        return res.json(err);
+        return res.send(err);
       }
-      return res.json({ message: 'session supprimée' });
+      return res.send({ message: 'session supprimée' });
     },
   );
 }; // delete

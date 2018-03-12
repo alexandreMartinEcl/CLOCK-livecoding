@@ -7,8 +7,18 @@ module.exports.findAllUsersOfSession = (req, res) => {
     if (err) {
       return res.send(err);
     }
+    if (!session) {
+      return res.status(401)
+        .send({
+          success: false,
+          msg: 'Session does not exist',
+        });
+    }
     const users = session[0].users.map(obj => obj.user);
-    return res.send(users);
+    return res.send({
+      success: true,
+      users,
+    });
   });
 }; // findAllUsersOfSession
 
@@ -43,7 +53,10 @@ module.exports.findUserSessionInfo = (req, res) => {
       }
       return result.users.push(usr.user);
     });
-    return res.send(result);
+    return res.send({
+      success: true,
+      result,
+    });
   });
 }; // findUserSessionInfo
 
@@ -52,6 +65,13 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
+    }
+    if (!session) {
+      return res.status(401)
+        .send({
+          success: false,
+          msg: 'Session does not exist',
+        });
     }
     usersUpdate = Object.assign({}, session);
     return usersUpdate.users.map((obj) => {
@@ -72,9 +92,21 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
     { new: true },
     (err, session) => {
       if (err) {
-        console.log(err);
+        return res.send(err);
       }
-      console.log(session);
+      if (!session) {
+        return res.status(401)
+          .send({
+            success: false,
+            msg: 'Session does not exist',
+          });
+      }
+      return res.send({
+        result: {
+          success: true,
+          session,
+        },
+      });
     },
   );
 }; // putNewCodeForUserWithinSession
