@@ -5,7 +5,14 @@ module.exports = {};
 module.exports.findAll = (req, res) => {
   Session.find({}, (err, sessions) => {
     if (err) {
-      return res.send(err);
+      return res.json(err);
+    }
+    if (!sessions) {
+      return res.status(401)
+        .json({
+          success: false,
+          message: 'There are no sessions',
+        });
     }
     return res.json(sessions);
   });
@@ -16,7 +23,14 @@ module.exports.findOne = (req, res) => {
     { hash: req.params.hash },
     (err, session) => {
       if (err) {
-        return res.send(err);
+        return res.json(err);
+      }
+      if (!session) {
+        return res.status(401)
+          .json({
+            success: false,
+            message: 'Session does not exist',
+          });
       }
       return res.json(session);
     },

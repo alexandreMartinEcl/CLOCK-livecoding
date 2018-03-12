@@ -5,10 +5,20 @@ module.exports = {};
 module.exports.findAllUsersOfSession = (req, res) => {
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
-      return res.send(err);
+      return res.json(err);
+    }
+    if (!session) {
+      return res.status(401)
+        .json({
+          success: false,
+          msg: 'Session does not exist',
+        });
     }
     const users = session[0].users.map(obj => obj.user);
-    return res.send(users);
+    return res.json({
+      success: true,
+      users,
+    });
   });
 }; // findAllUsersOfSession
 
@@ -17,11 +27,11 @@ module.exports.findUserSessionInfo = (req, res) => {
   const result = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
-      return res.send(err);
+      return res.json(err);
     }
     if (!session) {
       return res.status(401)
-        .send({
+        .json({
           success: false,
           msg: 'Session does not exist',
         });
@@ -43,7 +53,10 @@ module.exports.findUserSessionInfo = (req, res) => {
       }
       return result.users.push(usr.user);
     });
-    return res.send(result);
+    return res.json({
+      success: true,
+      result,
+    });
   });
 }; // findUserSessionInfo
 
@@ -51,7 +64,14 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
   let usersUpdate = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
-      return res.send(err);
+      return res.json(err);
+    }
+    if (!session) {
+      return res.status(401)
+        .json({
+          success: false,
+          msg: 'Session does not exist',
+        });
     }
     usersUpdate = Object.assign({}, session);
     return usersUpdate.users.map((obj) => {
@@ -72,9 +92,21 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
     { new: true },
     (err, session) => {
       if (err) {
-        console.log(err);
+        return res.json(err);
       }
-      console.log(session);
+      if (!session) {
+        return res.status(401)
+          .json({
+            success: false,
+            msg: 'Session does not exist',
+          });
+      }
+      return res.json({
+        result: {
+          success: true,
+          session,
+        },
+      });
     },
   );
 }; // putNewCodeForUserWithinSession
