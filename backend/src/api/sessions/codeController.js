@@ -33,7 +33,7 @@ module.exports.findUserSessionInfo = (req, res) => {
     result.name = session.name;
 
     result.users = [];
-    session[0].users.map((usr) => {
+    session.users.map((usr) => {
       if (usr.user.userid === req.params.userid) {
         result.code = {
           hmtl: usr.html,
