@@ -56,21 +56,23 @@ class IsOk extends React.PureComponent {
 
   getSession = async () => {
     const res = await reqGetSession(this.state.sessionId, this.props.user.userid);
-    if (res.status === "ok") {
-      this.props.contentOpenSession(res.code.html, res.code.css, res.code.js, res.session.hash, res.session.users);
+    if (res.success) {
+      console.log("Session found");
+      this.props.contentOpenSession(res.result.code.html, res.result.code.css, res.result.code.js, res.result.hash, res.result.users, res.result.name);
     } else {
-      // add popup
-      console.log("Lol");
+      alert(res.msg);
+      console.log(`Error: ${res.msg}`);
     }
   }
 
   createSession = async () => {
     const res = await reqCreateSession("userid");
-    if (res.status === "ok") {
-      this.props.contentOpenSession("", "", "", res.session.hash, []);
+    if (res.success) {
+      console.log("Session created");
+      this.props.contentOpenSession("", "", "", res.session.hash, []);//, res.result.name);
     } else {
-      // add popup
-      console.log("Lol");
+      alert(res.msg);
+      console.log(`Error: ${res.msg}`);
     }
   }
 

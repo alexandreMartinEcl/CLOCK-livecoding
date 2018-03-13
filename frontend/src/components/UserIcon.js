@@ -17,7 +17,7 @@ const styles = theme => ({
   media: {
     height: `calc(100% - ${theme.typography.subheading.fontSize}*2)`
   },
-  appName: {
+  userName: {
     textAlign: 'center',
     userSelect: 'none'
   },
@@ -26,7 +26,7 @@ const styles = theme => ({
   }
 });
 
-class AppIcon extends PureComponent {
+class UserIcon extends PureComponent {
   static muiName = 'GridListTile';
 
   static propTypes = {
@@ -34,23 +34,29 @@ class AppIcon extends PureComponent {
     classes: PropTypes.object.isRequired,
     logo: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
-    getUserCallback: PropTypes.func,
+    userid: PropTypes.string.isRequired,
+    getusercallback: PropTypes.func,
   };
 
+  handleClick = () => {
+    console.log(`User ${this.props.name} clicked.`);
+    this.props.getusercallback(this.props.userid);
+  }
+
   render() {
-    const {classes, logo, appName, ...baseProps} = this.props;
+    const {classes, logo, name, ...baseProps} = this.props;
 
     return (
       <GridListTile {...baseProps}>
-        <a href={this.props.href} className={classes.link}>
+        <a className={classes.link}>
           <Card className={classes.card}>
             <CardMedia
               className={classes.media}
               image={logo}
-              title={appName}/>
-            <Typography variant="subheading" className={classes.appName}>
-              {this.props.appName}
+              title={name}
+              onClick={this.handleClick}/>
+            <Typography variant="subheading" className={classes.userName}>
+              {this.props.name}
             </Typography>
           </Card>
         </a>
@@ -59,4 +65,4 @@ class AppIcon extends PureComponent {
   }
 }
 
-export default withStyles(styles)(AppIcon);
+export default withStyles(styles)(UserIcon);

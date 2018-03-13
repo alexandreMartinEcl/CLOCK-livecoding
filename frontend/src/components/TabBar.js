@@ -8,7 +8,8 @@ class TabBar extends PureComponent {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     labels: PropTypes.arrayOf(PropTypes.string),
-    handleTabChange: PropTypes.func
+    handleTabChange: PropTypes.func,
+    forcedTab: PropTypes.number,
   };
 
   static defaultProps = {
@@ -25,15 +26,20 @@ class TabBar extends PureComponent {
   };
 
   render() {
+    var tabVal;
+    if (typeof this.props.forcedTab !== 'undefined') {
+      tabVal = this.props.forcedTab;
+    } else {
+      tabVal = this.state.selectedTab;
+    }
     return (
       <AppBar position="static">
         <Tabs
-          value={this.state.selectedTab}
+          value={tabVal}
           onChange={this.handleChange}
           fullWidth>
-          <Tab label={this.props.labels[0]}/>
-          <Tab label={this.props.labels[1]}/>
-          <Tab label={this.props.labels[2]}/>
+
+          {this.props.labels.map((label, i) => <Tab label={label} />)}
         </Tabs>
       </AppBar>
     );
