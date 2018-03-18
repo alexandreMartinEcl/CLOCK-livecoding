@@ -1,4 +1,5 @@
 import agent from 'superagent';
+import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
 function localCreateSession(userid, sessionName){
     return new Promise(resolve => {
@@ -182,7 +183,21 @@ const choiceAgent = {
             }
         }
     },
-    online: agent    
+    online: {
+        get: (url) => {
+            return agent.get(url).set(getAuthHeaders()).catch(checkAuthResponse);
+        },
+        post: (url) => {
+            send: (params) => {
+                return agent.post(url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
+            }
+        },
+        update: (url) => {
+            send: (params) => {
+                return agent.update(url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
+            }
+        },
+    }
 }
 
 export default choiceAgent;
