@@ -9,9 +9,10 @@ const codeController = require('./codeController.js');
 // get requests
 router.get('/', sessionController.findAll);
 router.get('/:hash', sessionController.findOne);
+router.get('./users', sessionController.findUserInfo);
 
 router.get('/users/:hash', codeController.findAllUsersOfSession);
-router.get('/code/:hash/:userid', codeController.findUserSessionInfo);
+router.get('/code/:hash/:username', codeController.findUserSessionInfo);
 
 // post requests
 router.post('/', sessionController.create);
@@ -19,7 +20,7 @@ router.post('/', sessionController.create);
 // put requests
 router.put('/:hash/user', sessionController.insertNewUser);
 
-router.put('/code/:hash/:userid/:code', codeController.putNewCodeForUserWithinSession);
+router.put('/code/:hash/:username', codeController.putNewCodeForUserWithinSession);
 
 // delete requests
 router.delete('/:hash', sessionController.delete);

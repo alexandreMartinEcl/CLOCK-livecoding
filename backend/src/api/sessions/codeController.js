@@ -44,7 +44,7 @@ module.exports.findUserSessionInfo = (req, res) => {
 
     result.users = [];
     session.users.forEach((usr) => {
-      if (usr.user.email === req.user.email) {
+      if (usr.user.username === req.params.username) {
         result.code = {
           hmtl: usr.html,
           css: usr.css,
@@ -75,7 +75,7 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
     }
     usersUpdate = Object.assign({}, session);
     return usersUpdate.users.map((obj) => {
-      if (obj.user.email === req.params.email) {
+      if (obj.user.username === req.params.username) {
         const newUserWithCode = Object.assign({}, obj);
         newUserWithCode.html = req.params.code.html;
         newUserWithCode.css = req.params.code.css;

@@ -44,7 +44,7 @@ module.exports.findOne = (req, res) => {
 }; // findOne
 
 module.exports.create = (req, res) => {
-  console.log(`Creating session with user, having this email: ${req.user.email}`);
+  console.log(`Creating session with user, having this email: ${req.user.username}`);
   const userName = req.user.username;
   const userRole = req.user.role;
   const userNom = req.user.nom;
@@ -66,6 +66,26 @@ module.exports.create = (req, res) => {
     });
   });
 }; // create
+
+module.exports.findUserInfo = (req, res) => {
+  console.log(`Retrieving info from user ${req.user.username}`);
+  const userName = req.user.username;
+  const userRole = req.user.role;
+  const userNom = req.user.nom;
+  const userPrenom = req.user.prenom;
+  const userEmail = req.user.email;
+
+  return res.send({
+    success: true,
+    user: {
+      username: userName,
+      role: userRole,
+      nom: userNom,
+      prenom: userPrenom,
+      email: userEmail,
+    },
+  });
+}; // findUserInfo
 
 module.exports.insertNewUser = (req, res) => {
   const userName = req.user.username;
@@ -96,11 +116,13 @@ module.exports.insertNewUser = (req, res) => {
       }
       return res.send({
         success: true,
-        userName,
-        userRole,
-        userNom,
-        userPrenom,
-        userEmail,
+        user: {
+          username: userName,
+          role: userRole,
+          nom: userNom,
+          prenom: userPrenom,
+          email: userEmail,
+        },
       });
     },
   );
@@ -134,11 +156,13 @@ module.exports.removeUser = (req, res) => {
       }
       return res.send({
         success: true,
-        userName,
-        userRole,
-        userNom,
-        userPrenom,
-        userEmail,
+        user: {
+          username: userName,
+          role: userRole,
+          nom: userNom,
+          prenom: userPrenom,
+          email: userEmail,
+        },
       });
     },
   );
