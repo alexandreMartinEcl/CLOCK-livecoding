@@ -38,9 +38,18 @@ module.exports.findOne = (req, res) => {
 }; // findOne
 
 module.exports.create = (req, res) => {
-  console.log(`Creating session with user: ${req.body.creatorid}`);
-  const creator = req.body.creatorid;
-  const session = new Session({ creatorid: creator });
+  console.log(`Creating session with user, having this email: ${req.user.email}`);
+  const userName = req.user.username;
+  const userRole = req.user.role;
+  const userNom = req.user.nom;
+  const userPrenom = req.user.prenom;
+  const userEmail = req.user.email;
+
+  const session = new Session({
+    creator: {
+      userName, userRole, userNom, userPrenom, userEmail,
+    },
+  });
   session.save((err) => {
     if (err) {
       return res.send(err);
@@ -50,18 +59,23 @@ module.exports.create = (req, res) => {
 }; // create
 
 module.exports.insertNewUser = (req, res) => {
-  const firstName = 'firstNameFromLinkApp';
-  const lastName = 'lastNameFromLinkApp';
-  const userid = req.params.id;
+  const userName = req.user.username;
+  const userRole = req.user.role;
+  const userNom = req.user.nom;
+  const userPrenom = req.user.prenom;
+  const userEmail = req.user.email;
+
   Session.update(
     { hash: req.params.hash },
     {
       $push: {
         users: {
           user: {
-            userid,
-            firstName,
-            lastName,
+            userName,
+            userRole,
+            userNom,
+            userPrenom,
+            userEmail,
           },
         },
       },
@@ -72,27 +86,33 @@ module.exports.insertNewUser = (req, res) => {
         return res.send(err);
       }
       return res.send({
-        userid,
-        firstName,
-        lastName,
+        userName,
+        userRole,
+        userNom,
+        userPrenom,
+        userEmail,
       });
     },
   );
 }; // inseertNewUser
 
 module.exports.removeUser = (req, res) => {
-  const firstName = 'firstNameFromLinkApp';
-  const lastName = 'lastNameFromLinkApp';
-  const userid = req.params.id;
+  const userName = req.user.username;
+  const userRole = req.user.role;
+  const userNom = req.user.nom;
+  const userPrenom = req.user.prenom;
+  const userEmail = req.user.email;
   Session.update(
     { hash: req.params.hash },
     {
       $pull: {
         users: {
           user: {
-            userid,
-            firstName,
-            lastName,
+            userName,
+            userRole,
+            userNom,
+            userPrenom,
+            userEmail,
           },
         },
       },
@@ -103,9 +123,11 @@ module.exports.removeUser = (req, res) => {
         return res.send(err);
       }
       return res.send({
-        userid,
-        firstName,
-        lastName,
+        userName,
+        userRole,
+        userNom,
+        userPrenom,
+        userEmail,
       });
     },
   );

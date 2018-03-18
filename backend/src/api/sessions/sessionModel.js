@@ -12,15 +12,23 @@ const randomValueBase64 = (len) => {
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  userid: {
+  username: {
     type: String,
     required: true,
   },
-  firstName: {
+  role: {
     type: String,
     required: true,
   },
-  lastName: {
+  nom: {
+    type: String,
+    required: true,
+  },
+  prenom: {
+    type: String,
+    required: true,
+  },
+  email: {
     type: String,
     required: true,
   },
@@ -54,8 +62,8 @@ const sessionSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
-  creatorid: {
-    type: String,
+  creator: {
+    type: userSchema,
     required: true,
   },
   name: {
