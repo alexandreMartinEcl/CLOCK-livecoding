@@ -14,7 +14,10 @@ module.exports.findAll = (req, res) => {
           message: 'There are no sessions',
         });
     }
-    return res.send(sessions);
+    return res.send({
+      success: true,
+      sessions,
+    });
   });
 }; // findAll
 
@@ -32,7 +35,10 @@ module.exports.findOne = (req, res) => {
             message: 'Session does not exist',
           });
       }
-      return res.send(session);
+      return res.send({
+        success: true,
+        session,
+      });
     },
   );
 }; // findOne
@@ -54,7 +60,10 @@ module.exports.create = (req, res) => {
     if (err) {
       return res.send(err);
     }
-    return res.send(session);
+    return res.send({
+      success: true,
+      session,
+    });
   });
 }; // create
 
@@ -86,6 +95,7 @@ module.exports.insertNewUser = (req, res) => {
         return res.send(err);
       }
       return res.send({
+        success: true,
         userName,
         userRole,
         userNom,
@@ -123,6 +133,7 @@ module.exports.removeUser = (req, res) => {
         return res.send(err);
       }
       return res.send({
+        success: true,
         userName,
         userRole,
         userNom,
@@ -140,7 +151,10 @@ module.exports.delete = (req, res) => {
       if (err) {
         return res.send(err);
       }
-      return res.send({ message: 'session supprimée' });
+      return res.send({
+        success: true,
+        message: 'session supprimée',
+      });
     },
   );
 }; // delete
