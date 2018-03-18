@@ -61,6 +61,7 @@ module.exports.findUserSessionInfo = (req, res) => {
 }; // findUserSessionInfo
 
 module.exports.putNewCodeForUserWithinSession = (req, res) => {
+  const { html, css, js } = req.body;
   let usersUpdate = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
@@ -73,17 +74,17 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
           msg: 'Session does not exist',
         });
     }
-    usersUpdate = Object.assign({}, session);
-    return usersUpdate.users.map((obj) => {
-      if (obj.user.username === req.params.username) {
-        const newUserWithCode = Object.assign({}, obj);
-        newUserWithCode.html = req.params.code.html;
-        newUserWithCode.css = req.params.code.css;
-        newUserWithCode.js = req.params.code.js;
+    usersUpdate = session.users.map((userWithCode) => {
+      if (userWithCode.user.username === req.params.username) {
+        const newUserWithCode = Object.assign({}, userWithCode);
+        newUserWithCode.html = html;
+        newUserWithCode.css = css;
+        newUserWithCode.js = js;
         return newUserWithCode;
       }
-      return obj;
+      return userWithCode;
     });
+    return usersUpdate;
   });
 
   Session.findOneAndUpdate(
