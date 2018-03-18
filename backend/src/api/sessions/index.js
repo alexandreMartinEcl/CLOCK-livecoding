@@ -9,7 +9,6 @@ const codeController = require('./codeController.js');
 // get requests
 router.get('/', sessionController.findAll);
 router.get('/:hash', sessionController.findOne);
-router.get('./users', sessionController.findUserInfo);
 
 router.get('/users/:hash', codeController.findAllUsersOfSession);
 router.get('/code/:hash/:username', codeController.findUserSessionInfo);

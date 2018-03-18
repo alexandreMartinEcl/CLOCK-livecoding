@@ -38,4 +38,24 @@ mongoose.connect(process.env.MONGODB_URI);
 
 router.use('/sessions', require('./sessions'));
 
+router.use('/users', (req, res) => {
+  console.log(`Retrieving info from user ${req.user.username}`);
+  const userName = req.user.username;
+  const userRole = req.user.role;
+  const userNom = req.user.nom;
+  const userPrenom = req.user.prenom;
+  const userEmail = req.user.email;
+
+  return res.send({
+    success: true,
+    user: {
+      username: userName,
+      role: userRole,
+      nom: userNom,
+      prenom: userPrenom,
+      email: userEmail,
+    },
+  });
+});
+
 module.exports = router;

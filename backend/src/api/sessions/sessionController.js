@@ -67,26 +67,6 @@ module.exports.create = (req, res) => {
   });
 }; // create
 
-module.exports.findUserInfo = (req, res) => {
-  console.log(`Retrieving info from user ${req.user.username}`);
-  const userName = req.user.username;
-  const userRole = req.user.role;
-  const userNom = req.user.nom;
-  const userPrenom = req.user.prenom;
-  const userEmail = req.user.email;
-
-  return res.send({
-    success: true,
-    user: {
-      username: userName,
-      role: userRole,
-      nom: userNom,
-      prenom: userPrenom,
-      email: userEmail,
-    },
-  });
-}; // findUserInfo
-
 module.exports.insertNewUser = (req, res) => {
   const userName = req.user.username;
   const userRole = req.user.role;
