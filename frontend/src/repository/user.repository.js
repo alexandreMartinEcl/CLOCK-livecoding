@@ -1,14 +1,12 @@
-import { getToken } from "./tools";
 import agent from '../services/http';
 
-const backUrl = '/api/user';
+const backUrl = '/api/users';
 const getUrl = '/api/sessions';
+//const backUrl = 'https://requestb.in/ye13r9ye';
 
 export async function backendCheckUser() {
     console.log("Checking user with backend");
-    let token = getToken();
-    console.log("Token is: " + token);
-    const req = agent.local.get(backUrl).query({accessToken: token});
+    const req = agent.online.get(backUrl);
     try {
         const { body } = await req;
         console.log("User checked :");

@@ -22,9 +22,11 @@ class UsersMenu extends PureComponent {
     classes: PropTypes.object.isRequired,
     newUser: PropTypes.func,
     users: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string,
-      lastName: PropTypes.string,
-      firstName: PropTypes.string,
+      prenom: PropTypes.string,
+      nom: PropTypes.string,
+      username: PropTypes.string,
+      role: PropTypes.string,
+      email: PropTypes.string,
     })),
   };
 
@@ -104,7 +106,7 @@ class UsersMenu extends PureComponent {
         <div className={classes.root}>
           <GridList cellHeight={100} cols={5}>
             {this.state.users.map(user => (
-              <UserIcon key={user.id} logo={logo} name={user.firstName} userid={user.id} getusercallback={this.props.newUser} />
+              <UserIcon key={user.username} logo={logo} name={user.prenom} userid={user.username} getusercallback={this.props.newUser} />
             ))}
           </GridList>
         </div>
