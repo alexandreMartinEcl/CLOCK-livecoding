@@ -11,7 +11,7 @@ router.get('/', sessionController.findAll);
 router.get('/:hash', sessionController.findOne);
 
 router.get('/users/:hash', codeController.findAllUsersOfSession);
-router.get('/code/:hash/:username', codeController.findUserSessionInfo);
+router.get('/code/:hash', codeController.findUserSessionInfo);
 
 // post requests
 router.post('/', sessionController.create);
@@ -19,7 +19,7 @@ router.post('/', sessionController.create);
 // put requests
 router.put('/:hash/user', sessionController.insertNewUser);
 
-router.put('/code/:hash/:username', codeController.putNewCodeForUserWithinSession);
+router.put('/code/:hash', codeController.putNewCodeForUserWithinSession);
 
 // delete requests
 router.delete('/:hash', sessionController.delete);

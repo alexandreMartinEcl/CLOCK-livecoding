@@ -23,7 +23,7 @@ module.exports.findAllUsersOfSession = (req, res) => {
 }; // findAllUsersOfSession
 
 module.exports.findUserSessionInfo = (req, res) => {
-  console.log(`Getting all info relative to user ${req.user.email} in session ${req.params.hash}`);
+  console.log(`Getting all info relative to user ${req.user.username} in session ${req.params.hash}`);
   const result = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
@@ -44,7 +44,7 @@ module.exports.findUserSessionInfo = (req, res) => {
 
     result.users = [];
     session.users.forEach((usr) => {
-      if (usr.user.username === req.params.username) {
+      if (usr.user.username === req.user.username) {
         result.code = {
           hmtl: usr.html,
           css: usr.css,
@@ -61,6 +61,7 @@ module.exports.findUserSessionInfo = (req, res) => {
 }; // findUserSessionInfo
 
 module.exports.putNewCodeForUserWithinSession = (req, res) => {
+  console.log(`Updating the code for user ${req.user.username} in session ${req.params.hash}`);
   const { html, css, js } = req.body;
   let usersUpdate = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
