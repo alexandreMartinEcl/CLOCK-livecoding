@@ -12,7 +12,13 @@ const server = require('http').Server(app);
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/api', require('./api'));
+app.use(require('ebm-auth').initialize({
+  provider: 'https://linkapp.ebm.nymous.io/',
+}));
+
+app.use('/api', require('ebm-auth/dist/express').requireAuth({
+  provider: 'https://linkapp.ebm.nymous.io/',
+}), require('./api'));
 
 app.use(serveStatic('./public'));
 
@@ -24,7 +30,6 @@ app.use((err, req, res) => {
     error: err,
   });
 });
-
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

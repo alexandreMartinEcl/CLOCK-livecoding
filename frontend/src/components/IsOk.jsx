@@ -39,9 +39,11 @@ class IsOk extends React.PureComponent {
     className: PropTypes.string,
     classes: PropTypes.object.isRequired,
     user: PropTypes.shape({
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      userid: PropTypes.string,      
+      prenom: PropTypes.string,
+      nom: PropTypes.string,
+      username: PropTypes.string,
+      role: PropTypes.string,
+      email: PropTypes.string,
     }).isRequired,
     contentOpenSession: PropTypes.func
   };
@@ -55,7 +57,7 @@ class IsOk extends React.PureComponent {
   }
 
   getSession = async () => {
-    const res = await reqGetSession(this.state.sessionId, this.props.user.userid);
+    const res = await reqGetSession(this.state.sessionId);
     if (res.success) {
       console.log("Session found");
       this.props.contentOpenSession(res.result.code.html, res.result.code.css, res.result.code.js, res.result.hash, res.result.users, res.result.name);
@@ -69,7 +71,7 @@ class IsOk extends React.PureComponent {
     const res = await reqCreateSession("userid");
     if (res.success) {
       console.log("Session created");
-      this.props.contentOpenSession("", "", "", res.session.hash, []);//, res.result.name);
+      this.props.contentOpenSession(res.result.code.html, res.result.code.css, res.result.code.js, res.result.hash, res.result.users, res.result.name);//, res.result.name);
     } else {
       alert(res.msg);
       console.log(`Error: ${res.msg}`);
@@ -82,7 +84,7 @@ class IsOk extends React.PureComponent {
         <div className={this.props.className}>
         <div className={this.props.classes.centerFrame}>
 
-          <p className={this.props.classes.whiteText}>Bienvenue {this.props.user.firstName + " " + this.props.user.lastName} </p>
+          <p className={this.props.classes.whiteText}>Bienvenue {this.props.user.prenom + " " + this.props.user.nom} </p>
           <TextField
             label="Code de la session"
             id="margin-none"

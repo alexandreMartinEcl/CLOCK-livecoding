@@ -1,4 +1,5 @@
 import agent from 'superagent';
+import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
 function localCreateSession(userid, sessionName){
     return new Promise(resolve => {
@@ -6,23 +7,31 @@ function localCreateSession(userid, sessionName){
             resolve({
                 body: {
                     success: true,
-                    session: {
-                        creatorid: userid,
+                    result: {
+                        creator: {
+                            username: "remy",
+                            role: "intervenant",
+                            nom: "remy",
+                            prenom: "remy",
+                            email: "remy@remy.fr",
+                        },
                         hash: "newSession",
                         created: Date.now(),
                         name: sessionName,
-                        users:[
+                        users: [
                             {
-                                user:{
-                                    userid: userid,
-                                    firstName: "Alex",
-                                    lastName: "Martin",
-                                },
-                                html: "",
-                                css: "",
-                                js: "",
-                            }
+                                username: "remy",
+                                role: "intervenant",
+                                nom: "remy",
+                                prenom: "remy",
+                                email: "remy@remy.fr",
+                            },
                         ],
+                        code: {
+                            html: "",
+                            css: "",
+                            js: "",
+                        },
                     },
                 },
             });
@@ -42,19 +51,29 @@ function localGetSession(url){
                             success: true,
                             result: {
                                 hash: sessionId,
-                                creatorid: "remy",
+                                creator: {
+                                    username: "remy",
+                                    role: "intervenant",
+                                    nom: "remy",
+                                    prenom: "remy",
+                                    email: "remy@remy.fr",
+                                },
                                 created: Date.now(),
                                 name: "Frontend - Backend 2018",
                                 users:[
                                     {
-                                        userid: "alex",
-                                        firstName: "Alex",
-                                        lastName: "Martin",
+                                        username: "remy",
+                                        role: "intervenant",
+                                        nom: "remy",
+                                        prenom: "remy",
+                                        email: "remy@remy.fr",
                                     },
                                     {
-                                        userid: "remy",
-                                        firstName: "Remy",
-                                        lastName: "Prioul",
+                                        username: "alex",
+                                        role: "eleve",
+                                        nom: "martin",
+                                        prenom: "alexandre",
+                                        email: "alex@gmail.com",
                                     },
                                 ],
                                 code: {
@@ -75,20 +94,30 @@ function localGetSession(url){
                             success: true,
                             result: {
                                 hash: sessionId,
-                                creatorid: "remy",
+                                creator: {
+                                    username: "remy",
+                                    role: "intervenant",
+                                    nom: "remy",
+                                    prenom: "remy",
+                                    email: "remy@remy.fr",
+                                },
                                 created: Date.now(),
                                 name: "Frontend - Backend 2018",
                                 users:[
                                     {
-                                        userid: "alex",
-                                        firstName: "Alex",
-                                        lastName: "Martin",
-                                    },
+                                        username: "remy",
+                                        role: "intervenant",
+                                        nom: "remy",
+                                        prenom: "remy",
+                                        email: "remy@remy.fr",
+                                        },
                                     {
-                                        userid: "remy",
-                                        firstName: "Remy",
-                                        lastName: "Prioul",
-                                    },
+                                        username: "alex",
+                                        role: "eleve",
+                                        nom: "martin",
+                                        prenom: "alexandre",
+                                        email: "alex@gmail.com",
+                                        },
                                 ],
                                 code: {
                                     html: "<h1 class=title >My owner is Remy</h1>",
@@ -106,7 +135,7 @@ function localGetSession(url){
                     resolve({
                         body: {
                             success: false,
-                            msg: 'user not found in this session',
+                            message: 'user not found in this session',
                         },
                     });
                 }, 1000);
@@ -118,7 +147,7 @@ function localGetSession(url){
                 resolve({
                     body: {
                         success: false,
-                        msg: 'Session does not exist',
+                        message: 'Session does not exist',
                     },
                 });
             }, 1000);
@@ -126,18 +155,22 @@ function localGetSession(url){
     }
 }
 
-function localCheckUser(token){
+function localCheckUser(){
+    var token = "test";//localStorage.getItem('token') || null;
+    console.log("Token is: " + token);
+
     if(token === "test"){
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve({
                     body: {
-                        status: "ok",                        
-                        authentified: true,
+                        success: true,                        
                         user: {
-                            firstName: "Alex",
-                            lastName: "Martin",
-                            userid: "alex",
+                            username: "remy",
+                            role: "intervenant",
+                            nom: "remy",
+                            prenom: "remy",
+                            email: "remy@remy.fr",
                         },
                     },
                 });
@@ -149,8 +182,8 @@ function localCheckUser(token){
             setTimeout(() => {
                 resolve({
                     body: {
-                        status: "not found",
-                        authentified: false,
+                        message: "not found",
+                        success: false,
                     },
                 });
             }, 1000);
@@ -164,12 +197,8 @@ const choiceAgent = {
             if (url.startsWith('/api/sessions')) {
                 return localGetSession(url);
             }
-            if (url === '/api/user') {
-                return {
-                    query: (params) => {
-                        return localCheckUser(params.accessToken);
-                    }
-                }
+            if (url === '/api/users') {
+                return localCheckUser();
             }
         },
         post: (url) => {
@@ -182,7 +211,26 @@ const choiceAgent = {
             }
         }
     },
-    online: agent    
+    online: {
+        get: (url) => {
+            console.log(getAuthHeaders());
+            return agent.get(url).set(getAuthHeaders()).catch(checkAuthResponse);
+        },
+        post: (url) => {
+            return {
+                send: (params) => {
+                    return agent.post(url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
+                }
+            }
+        },
+        update: (url) => {
+            return {
+                send: (params) => {
+                    return agent.update(url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
+                }
+            }
+        },
+    }
 }
 
 export default choiceAgent;

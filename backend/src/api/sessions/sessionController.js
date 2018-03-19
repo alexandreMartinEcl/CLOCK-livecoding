@@ -14,7 +14,10 @@ module.exports.findAll = (req, res) => {
           message: 'There are no sessions',
         });
     }
-    return res.send(sessions);
+    return res.send({
+      success: true,
+      sessions,
+    });
   });
 }; // findAll
 
@@ -32,36 +35,52 @@ module.exports.findOne = (req, res) => {
             message: 'Session does not exist',
           });
       }
-      return res.send(session);
+      return res.send({
+        success: true,
+        session,
+      });
     },
   );
 }; // findOne
 
 module.exports.create = (req, res) => {
-  console.log(`Creating session with user: ${req.body.creatorid}`);
-  const creator = req.body.creatorid;
-  const session = new Session({ creatorid: creator });
+  console.log(`Creating session with user, having this email: ${req.user.username}`);
+  const {
+    username, role, nom, prenom, email,
+  } = req.user;
+
+  const session = new Session({
+    creator: {
+      username, role, nom, prenom, email,
+    },
+  });
   session.save((err) => {
     if (err) {
       return res.send(err);
     }
-    return res.send(session);
+    return res.send({
+      success: true,
+      session,
+    });
   });
 }; // create
 
 module.exports.insertNewUser = (req, res) => {
-  const firstName = 'firstNameFromLinkApp';
-  const lastName = 'lastNameFromLinkApp';
-  const userid = req.params.id;
+  const {
+    username, role, nom, prenom, email,
+  } = req.user;
+
   Session.update(
     { hash: req.params.hash },
     {
       $push: {
         users: {
           user: {
-            userid,
-            firstName,
-            lastName,
+            username,
+            role,
+            nom,
+            prenom,
+            email,
           },
         },
       },
@@ -72,27 +91,34 @@ module.exports.insertNewUser = (req, res) => {
         return res.send(err);
       }
       return res.send({
-        userid,
-        firstName,
-        lastName,
+        success: true,
+        user: {
+          username,
+          role,
+          nom,
+          prenom,
+          email,
+        },
       });
     },
   );
 }; // inseertNewUser
 
 module.exports.removeUser = (req, res) => {
-  const firstName = 'firstNameFromLinkApp';
-  const lastName = 'lastNameFromLinkApp';
-  const userid = req.params.id;
+  const {
+    username, role, nom, prenom, email,
+  } = req.user;
   Session.update(
     { hash: req.params.hash },
     {
       $pull: {
         users: {
           user: {
-            userid,
-            firstName,
-            lastName,
+            username,
+            role,
+            nom,
+            prenom,
+            email,
           },
         },
       },
@@ -103,9 +129,14 @@ module.exports.removeUser = (req, res) => {
         return res.send(err);
       }
       return res.send({
-        userid,
-        firstName,
-        lastName,
+        success: true,
+        user: {
+          username,
+          role,
+          nom,
+          prenom,
+          email,
+        },
       });
     },
   );
@@ -118,7 +149,10 @@ module.exports.delete = (req, res) => {
       if (err) {
         return res.send(err);
       }
-      return res.send({ message: 'session supprimée' });
+      return res.send({
+        success: true,
+        message: 'session supprimée',
+      });
     },
   );
 }; // delete

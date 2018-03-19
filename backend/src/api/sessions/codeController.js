@@ -14,7 +14,7 @@ module.exports.findAllUsersOfSession = (req, res) => {
           msg: 'Session does not exist',
         });
     }
-    const users = session[0].users.map(obj => obj.user);
+    const users = session.users.map(obj => obj.user);
     return res.send({
       success: true,
       users,
@@ -23,7 +23,7 @@ module.exports.findAllUsersOfSession = (req, res) => {
 }; // findAllUsersOfSession
 
 module.exports.findUserSessionInfo = (req, res) => {
-  console.log(`Getting all info relative to user ${req.params.userid} in session ${req.params.hash}`);
+  console.log(`Getting all info relative to user ${req.user.username} in session ${req.params.hash}`);
   const result = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
@@ -38,13 +38,13 @@ module.exports.findUserSessionInfo = (req, res) => {
     }
     result.success = true;
     result.hash = session.hash;
-    result.creatorid = session.creatorid;
+    result.creator = session.creator;
     result.created = session.created;
     result.name = session.name;
 
     result.users = [];
-    session.users.map((usr) => {
-      if (usr.user.userid === req.params.userid) {
+    session.users.forEach((usr) => {
+      if (usr.user.username === req.user.username) {
         result.code = {
           hmtl: usr.html,
           css: usr.css,
@@ -61,6 +61,8 @@ module.exports.findUserSessionInfo = (req, res) => {
 }; // findUserSessionInfo
 
 module.exports.putNewCodeForUserWithinSession = (req, res) => {
+  console.log(`Updating the code for user ${req.user.username} in session ${req.params.hash}`);
+  const { html, css, js } = req.body;
   let usersUpdate = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
@@ -73,17 +75,17 @@ module.exports.putNewCodeForUserWithinSession = (req, res) => {
           msg: 'Session does not exist',
         });
     }
-    usersUpdate = Object.assign({}, session);
-    return usersUpdate.users.map((obj) => {
-      if (obj.user.userid === req.params.userid) {
-        const newUserWithCode = Object.assign({}, obj);
-        newUserWithCode.html = req.params.code.html;
-        newUserWithCode.css = req.params.code.css;
-        newUserWithCode.js = req.params.code.js;
+    usersUpdate = session.users.map((userWithCode) => {
+      if (userWithCode.user.username === req.params.username) {
+        const newUserWithCode = Object.assign({}, userWithCode);
+        newUserWithCode.html = html;
+        newUserWithCode.css = css;
+        newUserWithCode.js = js;
         return newUserWithCode;
       }
-      return obj;
+      return userWithCode;
     });
+    return usersUpdate;
   });
 
   Session.findOneAndUpdate(

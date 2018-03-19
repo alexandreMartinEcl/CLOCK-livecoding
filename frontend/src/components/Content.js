@@ -112,6 +112,7 @@ class Content extends PureComponent {
             </IconButton>
           </Tooltip>
           <UsersMenu
+            users={this.state.users}
             open={this.state.usersMenuOpen}
             anchorEl={this.state.anchorEl}
             closeCallback={this.handleUsersMenuClose}
