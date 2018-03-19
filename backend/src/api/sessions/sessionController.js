@@ -44,7 +44,8 @@ module.exports.findOne = (req, res) => {
 }; // findOne
 
 module.exports.create = (req, res) => {
-  console.log(`Creating session with user, having this email: ${req.user.username}`);
+  console.log(`Creating session with user, having this username: ${req.user.username}`);
+  const result = {};
   const {
     username, role, nom, prenom, email,
   } = req.user;
@@ -53,14 +54,26 @@ module.exports.create = (req, res) => {
     creator: {
       username, role, nom, prenom, email,
     },
+    users: [{
+      username,
+      role,
+      nom,
+      prenom,
+      email,
+    }],
   });
   session.save((err) => {
     if (err) {
       return res.send(err);
     }
+    result.success = true;
+    result.hash = session.hash;
+    result.creator = session.creator;
+    result.created = session.created;
+    result.name = session.name;
     return res.send({
       success: true,
-      session,
+      result,
     });
   });
 }; // create
