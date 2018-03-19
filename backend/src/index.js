@@ -12,6 +12,10 @@ const server = require('http').Server(app);
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use(require('ebm-auth').initialize({
+  provider: 'https://linkapp.ebm.nymous.io/',
+}));
+
 app.use('/api', require('ebm-auth/dist/express').requireAuth({
   provider: 'https://linkapp.ebm.nymous.io/',
 }), require('./api'));
