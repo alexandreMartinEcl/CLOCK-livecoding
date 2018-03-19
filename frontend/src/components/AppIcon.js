@@ -34,7 +34,6 @@ class AppIcon extends PureComponent {
     classes: PropTypes.object.isRequired,
     logo: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
     getUserCallback: PropTypes.func,
   };
 
