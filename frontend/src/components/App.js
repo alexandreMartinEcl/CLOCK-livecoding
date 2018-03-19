@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import './App.css';
 import theme from '../theme';
-import GlobalAppBar from './GlobalAppBar';
+import GlobalAppBar from './Base/GlobalAppBar';
 import Content from './Content';
 
 const styles = theme => ({

@@ -1,10 +1,9 @@
 import React from 'react';
 import { withStyles } from 'material-ui';
 
-import { backendCheckUser } from '../repository/user.repository';
+import { backendCheckUser } from '../../repository/user.repository';
 import PropTypes from 'prop-types';
 import IsOk from "./IsOk";
-import IsNotOk from "./IsNotOk";
 
 const styles = theme => ({
   root: {
@@ -28,17 +27,18 @@ class IdentityResp extends React.PureComponent {
       name: PropTypes.string,
       authentified: PropTypes.bool
     }),
-    sessionFunc: PropTypes.func
+    openSession: PropTypes.func.isRequired,
+    setUser: PropTypes.func.isRequired,
+    user: PropTypes.shape({
+      username: PropTypes.string,
+      role: PropTypes.string,
+      nom: PropTypes.string,
+      prenom: PropTypes.string,
+      email: PropTypes.string,
+    }),
   };
 
   state = {
-    user: {
-      username: "",
-      role: "",
-      nom: "",
-      prenom: "",
-      email: "",
-    },
     authentified: false,
     requested: false,
   }
@@ -50,7 +50,9 @@ class IdentityResp extends React.PureComponent {
   async componentDidMount(){
     const {user, success, message} = await backendCheckUser();
     if (success) {
-      this.setState({user: user, authentified: true, requested: true});
+      console.log(`User authentified: ${user.username}`)
+      this.props.setUser(user);
+      this.setState({requested: true, authentified: true});
     } else {
       console.log(message);
       this.setState({requested: true});
@@ -67,12 +69,12 @@ class IdentityResp extends React.PureComponent {
     if(this.state.authentified){
       return (
         <IsOk 
-          user={this.state.user} 
-          contentOpenSession={this.props.sessionFunc}
+          user={this.props.user} 
+          contentOpenSession={this.props.openSession}
         />
       );
     } else {
-      return <IsNotOk/>;
+      return <div>Error: you should have been redirected to authentification</div>;
     }  
   }
 }

@@ -5,9 +5,9 @@ import { Tooltip, IconButton, withStyles } from 'material-ui';
 import Chip from 'material-ui/Chip';
 import {Group as UsersIcon} from 'material-ui-icons';
 
-import UsersMenu from './UsersMenu';
-import IdentityResp from './IdentityResp';
-import CodePages from './CodePages';
+import UsersMenu from './Session/UsersMenu';
+import IdentityResp from './Auth/IdentityResp';
+import CodePages from './Session/CodePages';
 import { getUserCode } from '../repository/user.repository';
 
 const styles = theme => ({
@@ -47,6 +47,13 @@ class Content extends PureComponent {
     },
     users: [],
     usersCodes: [],
+    currentUser: {
+      username: "",
+      role: "",
+      nom: "",
+      prenom: "",
+      email: "",
+    },
     usersMenuOpen: false,
     anchorEl: null,
   };
@@ -65,6 +72,11 @@ class Content extends PureComponent {
       usersMenuOpen: false,
     });
   };
+
+  setCurrentUser = (user) => {
+    console.log("Updating currentUser");
+    this.setState({currentUser: user});
+  }
 
   addUserCode = (userName, html, css, js) => {
     console.log(`Adding user ${userName} to Content.state`);
@@ -87,20 +99,22 @@ class Content extends PureComponent {
     this.addUserCode(userId, res.html, res.css, res.js);
   }
 
-  openSession = (htmlTxt, cssTxt, jsTxt, id, users, name) => {
-    console.log(`Session opened (html: ${htmlTxt}, css: ${cssTxt}, js: ${jsTxt}, sessionId: ${id}, sessionName: ${name}, users: `);
+  openSession = (code, id, users, name) => {
+    console.log(`Session opened (html: ${code.html}, css: ${code.css}, js: ${code.js}, sessionId: ${id}, sessionName: ${name}, users: `);
     console.log(users);
 
-    this.addUserCode("My code", htmlTxt, cssTxt, jsTxt);
+    this.addUserCode("My code", code.html, code.css, code.js);
 
     this.setState({session: {opened: true, id, name}, users: users});
   };
 
   render() {
+    const {className, classes} = this.props;
+    const {session, users, usersMenuOpen, anchorEl, usersCodes, currentUser} = this.state;
     if (this.state.session.opened){
       return (
-        <div className={this.props.className}>
-          <Chip label={`Session ${this.state.session.name}`} className={this.props.classes.chip} />
+        <div className={className}>
+          <Chip label={`Session ${session.name}`} className={classes.chip} />
           
           <Tooltip id="apps-icon" title="Users">
             <IconButton
@@ -112,22 +126,25 @@ class Content extends PureComponent {
             </IconButton>
           </Tooltip>
           <UsersMenu
-            users={this.state.users}
-            open={this.state.usersMenuOpen}
-            anchorEl={this.state.anchorEl}
+            users={users}
+            open={usersMenuOpen}
+            anchorEl={anchorEl}
             closeCallback={this.handleUsersMenuClose}
             newUser={this.openNewUser}
           />
 
           <CodePages
-          users={this.state.usersCodes}
+          users={usersCodes}
           />
         </div>
       );
     } else {
       return (
-        <div className={this.props.className}>
-          <IdentityResp sessionFunc={this.openSession} />
+        <div className={className}>
+          <IdentityResp 
+            openSession={this.openSession}
+            setUser={this.setCurrentUser}
+            user={currentUser} />
         </div>
       );
     }

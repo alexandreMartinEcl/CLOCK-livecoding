@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { reqCreateSession, reqGetSession } from '../repository/session.repository';
 import { Button, withStyles } from 'material-ui';
 import TextField from 'material-ui/TextField';
+
+import { reqCreateSession, reqGetSession } from '../../repository/session.repository';
 
 const styles = theme => ({
   container: {
@@ -58,52 +59,52 @@ class IsOk extends React.PureComponent {
 
   getSession = async () => {
     const res = await reqGetSession(this.state.sessionId);
-    if (res.success) {
-      console.log("Session found");
-      this.props.contentOpenSession(res.result.code.html, res.result.code.css, res.result.code.js, res.result.hash, res.result.users, res.result.name);
-    } else {
-      alert(res.msg);
-      console.log(`Error: ${res.msg}`);
-    }
+    this.openSession(res, "found");
   }
 
   createSession = async () => {
     const res = await reqCreateSession("userid");
+    this.openSession(res, "created");
+  }
+
+  openSession = (res, adj) => {
     if (res.success) {
-      console.log("Session created");
-      this.props.contentOpenSession(res.result.code.html, res.result.code.css, res.result.code.js, res.result.hash, res.result.users, res.result.name);//, res.result.name);
+      console.log(`Session ${adj}`);
+      const {code, hash, users, name} = res.result;
+      this.props.contentOpenSession(code, hash, users, name);
     } else {
-      alert(res.msg);
-      console.log(`Error: ${res.msg}`);
+      alert(res.message);
+      console.log(`Error: ${res.message}`);
     }
   }
 
   render() {
+    const {className, classes, user} = this.props;
     return (
       <div>
-        <div className={this.props.className}>
-        <div className={this.props.classes.centerFrame}>
+        <div className={className}>
+        <div className={classes.centerFrame}>
 
-          <p className={this.props.classes.whiteText}>Bienvenue {this.props.user.prenom + " " + this.props.user.nom} </p>
+          <p className={classes.whiteText}>Bienvenue {user.prenom + " " + this.props.user.nom} </p>
           <TextField
             label="Code de la session"
             id="margin-none"
             defaultValue=""
             onChange={this.handleChange}
-            labelClassName={this.props.classes.whiteText}
-            helperTextClassName={this.props.classes.whiteText}
-            InputProps={{className: this.props.classes.whiteText}}
-            className={this.props.classes.textField}
+            labelClassName={classes.whiteText}
+            helperTextClassName={classes.whiteText}
+            InputProps={{className: classes.whiteText}}
+            className={classes.textField}
             //helperText="Some important text"
           />
         
-        <div className={this.props.classes.btnLine}>
+        <div className={classes.btnLine}>
           <Button variant="raised" color="secondary" onClick={this.getSession}>
             Rejoindre une session
           </Button>
         </div>
           
-        <div className={this.props.classes.btnLine}>
+        <div className={classes.btnLine}>
           <Button variant="flat" color="secondary" onClick={this.createSession}>
             Créer une session
           </Button>

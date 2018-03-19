@@ -1,6 +1,8 @@
 import agent from 'superagent';
 import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
+//const base = "https://clock-livecoding.ebm.nymous.io/";
+
 function localCreateSession(userid, sessionName){
     return new Promise(resolve => {
         setTimeout(() => {
@@ -40,7 +42,9 @@ function localCreateSession(userid, sessionName){
 }
 
 function localGetSession(url){
-    const [, , , sessionId, userId] = url.split("/");
+    console.log(url);
+    const [, , , , sessionId] = url.split("/");
+    const userId = "alex";
     console.log(sessionId);
     if(sessionId === "test"){
         if (userId === "alex") {

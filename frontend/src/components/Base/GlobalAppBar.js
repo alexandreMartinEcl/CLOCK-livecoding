@@ -7,7 +7,7 @@ import {Apps as AppsIcon} from 'material-ui-icons';
 
 import AppsMenu from './AppsMenu';
 
-import logo from '../images/logo.png';
+import logo from '../../images/logo.png';
 
 const styles = {
   appBarWithTabBar: {

@@ -55,11 +55,13 @@ module.exports.create = (req, res) => {
       username, role, nom, prenom, email,
     },
     users: [{
-      username,
-      role,
-      nom,
-      prenom,
-      email,
+      user: {
+        username,
+        role,
+        nom,
+        prenom,
+        email,
+      },
     }],
   });
   session.save((err) => {
