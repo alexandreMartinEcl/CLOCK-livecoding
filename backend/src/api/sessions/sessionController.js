@@ -88,8 +88,22 @@ module.exports.insertNewUser = (req, res) => {
   const {
     username, role, nom, prenom, email,
   } = req.user;
+  const result = {};
 
   Session.update(
+    { hash: req.params.hash },
+    {
+      $pull: {
+        users: {
+          user: {
+            username,
+          },
+        },
+      },
+    },
+  );
+
+  Session.findOneAndUpdate(
     { hash: req.params.hash },
     {
       $push: {
@@ -104,20 +118,36 @@ module.exports.insertNewUser = (req, res) => {
         },
       },
     },
-    { runValidators: true },
-    (err) => {
+    (err, session) => {
       if (err) {
         return res.send(err);
       }
+      if (!session) {
+        return res.status(401)
+          .send({
+            success: false,
+            message: 'Session does not exist',
+          });
+      }
+      result.hash = session.hash;
+      result.creator = session.creator;
+      result.created = session.created;
+      result.name = session.name;
+
+      result.users = [];
+      session.users.forEach((usr) => {
+        if (usr.user.username === req.user.username) {
+          result.code = {
+            hmtl: usr.html,
+            css: usr.css,
+            js: usr.js,
+          };
+        }
+        return result.users.push(usr.user);
+      });
       return res.send({
         success: true,
-        user: {
-          username,
-          role,
-          nom,
-          prenom,
-          email,
-        },
+        result,
       });
     },
   );

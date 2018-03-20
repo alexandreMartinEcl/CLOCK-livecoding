@@ -1,4 +1,7 @@
 const Session = require('./sessionModel');
+const fs = require('fs');
+// const archiver = require('archiver');
+const cp = require('child_process');
 
 module.exports = {};
 
@@ -137,3 +140,47 @@ module.exports.updateCodeInSession = (req, res) => {
     );
   });
 }; // updateCodeInSession
+
+module.exports.downloadUserCode = (req, res) => {
+  console.log(`Downloading the code for user ${req.user.username} in session ${req.params.hash}`);
+  const { html, css, js } = req.body;
+
+  // build filename
+  const dt = new Date();
+  const fileName = `${dt.getFullYear()}_${(dt.getMonth() + 1)}_${dt.getDate()}_${req.params.hash}_${req.user.username}`;
+
+  // function that will write the files down in temp folder before zippping
+  const writeFile = (newFileName, extension, str) => fs.writeFile(`/tmp/${newFileName}/${newFileName}.${extension}`, str, (err) => { // eslint-disable-line
+  // need to disable next line because this fucker won't understand
+  // that I don't want to return anything on success
+    if (err) {
+      return res.status(400)
+        .send({
+          success: false,
+          message: 'Failure while building zip archive',
+        });
+    }
+    console.log(`The file ${newFileName}.${extension} was saved!`);
+  }); // writeFile
+
+  const baseHtmlTemplate = '<!doctype html>\n' +
+    '<html>\n\t' +
+    '<head>\n\t\t' +
+    '<meta charset="utf-8">\n\t\t' +
+    '<title>Test</title>\n\t' +
+    '</head>\n\t' +
+    '<body>\n\t\t' +
+    '\n\t' +
+    '</body>\n' +
+    '</html>';
+  const htmlFile = baseHtmlTemplate.replace('\n\t</body>', `${html.replace('\n', '\n\t\t')}\n\t</body>`);
+  htmlFile.replace('</head>\n\t', `<link rel="stylesheet" href="./${fileName}.css" />\n\t</head>\n\t`);
+  htmlFile.replace('</head>\n\t', `<script src="./${fileName}.js"></script>\n\t</head>\n\t`);
+
+  writeFile(fileName, 'html', htmlFile);
+  writeFile(fileName, 'css', css);
+  writeFile(fileName, 'js', js);
+
+  // delete folder once the deed is done
+  cp.exec(`rm -Rf /tmp/${fileName}`);
+}; // downloadUserCode
