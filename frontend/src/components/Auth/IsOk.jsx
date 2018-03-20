@@ -50,25 +50,30 @@ class IsOk extends React.PureComponent {
   };
 
   state = {
-    sessionId: ""
+    sessionHash: "",
+    sessionName: "",
   }
 
   handleChange = (event) => {
-    this.setState({sessionId: event.target.value});
+    this.setState({[event.target.id]: event.target.value});
   }
 
   getSession = async () => {
-    const res = await reqGetSession(this.state.sessionId);
+    const res = await reqGetSession(this.state.sessionHash);
     this.openSession(res, "found");
   }
 
   createSession = async () => {
-    const res = await reqCreateSession("userid");
+    const res = await reqCreateSession(this.state.sessionName);
     res.result.code = {
       html: "", 
       css: "",
       js: "",
     }
+    var firstUser = res.result.users[0];
+    res.result.users[0] = firstUser.user;
+    delete firstUser.user;
+    res.result.code = firstUser;
     this.openSession(res, "created");
   }
 
@@ -93,7 +98,7 @@ class IsOk extends React.PureComponent {
           <p className={classes.whiteText}>Bienvenue {user.prenom + " " + this.props.user.nom} </p>
           <TextField
             label="Code de la session"
-            id="margin-none"
+            id="sessionHash"
             defaultValue=""
             onChange={this.handleChange}
             labelClassName={classes.whiteText}
@@ -109,6 +114,18 @@ class IsOk extends React.PureComponent {
           </Button>
         </div>
           
+        <TextField
+            label="Nom d'une nouvelle session"
+            id="sessionName"
+            defaultValue=""
+            onChange={this.handleChange}
+            labelClassName={classes.whiteText}
+            helperTextClassName={classes.whiteText}
+            InputProps={{className: classes.whiteText}}
+            className={classes.textField}
+            //helperText="Some important text"
+          />
+
         <div className={classes.btnLine}>
           <Button variant="flat" color="secondary" onClick={this.createSession}>
             Créer une session
