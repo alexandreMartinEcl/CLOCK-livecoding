@@ -102,6 +102,7 @@ class Content extends PureComponent {
     })
 
     if (alreadySet) {
+      console.log(`Code already here`);
       return;
     }
 
@@ -120,10 +121,10 @@ class Content extends PureComponent {
   }
 
   openSession = (code, hash, users, name) => {
+    name = name || hash;
     console.log(`Session opened (html: ${code.html}, css: ${code.css}, js: ${code.js}, sessionHash: ${hash}, sessionName: ${name}, users: `);
     console.log(users);
 
-    this.setState({session: {opened: true, hash: hash, name: name}})
     this.addUserCode(this.state.currentUser.username, "Mon espace", code.html, code.css, code.js);
 
     this.setState({session: {opened: true, hash, name}, users: users});
