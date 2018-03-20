@@ -103,6 +103,7 @@ module.exports.updateCodeInSession = (req, res) => {
           message: 'Session does not exist',
         });
     }
+
     updatedUsers = session.users.map((userWithCode) => {
       if (userWithCode.user.username === req.user.username) {
         const newUserWithCode = Object.assign({}, userWithCode);
@@ -114,15 +115,15 @@ module.exports.updateCodeInSession = (req, res) => {
       return userWithCode;
     });
 
-    Session.findOneAndUpdate(
+    return Session.findOneAndUpdate(
       { hash: req.params.hash },
       { $set: { users: updatedUsers } },
       { new: true },
-      (err, session) => {
-        if (err) {
-          return res.send(err);
+      (err2, session2) => {
+        if (err2) {
+          return res.send(err2);
         }
-        if (!session) {
+        if (!session2) {
           return res.status(401)
             .send({
               success: false,
@@ -134,6 +135,5 @@ module.exports.updateCodeInSession = (req, res) => {
         });
       },
     );
-
   });
 }; // updateCodeInSession
