@@ -101,57 +101,61 @@ module.exports.insertNewUser = (req, res) => {
         },
       },
     },
-  );
-
-  Session.findOneAndUpdate(
-    { hash: req.params.hash },
-    {
-      $push: {
-        users: {
-          user: {
-            username,
-            role,
-            nom,
-            prenom,
-            email,
-          },
-        },
-      },
-    },
-    (err, session) => {
+    (err) => {
       if (err) {
         return res.send(err);
       }
-      if (!session) {
-        return res.status(401)
-          .send({
-            success: false,
-            message: 'Session does not exist',
-          });
-      }
-      result.hash = session.hash;
-      result.creator = session.creator;
-      result.created = session.created;
-      result.name = session.name;
+      return Session.findOneAndUpdate(
+        { hash: req.params.hash },
+        {
+          $push: {
+            users: {
+              user: {
+                username,
+                role,
+                nom,
+                prenom,
+                email,
+              },
+            },
+          },
+        },
+        (err2, session) => {
+          if (err2) {
+            return res.send(err2);
+          }
+          if (!session) {
+            return res.status(401)
+              .send({
+                success: false,
+                message: 'Session does not exist',
+              });
+          }
+          result.hash = session.hash;
+          result.creator = session.creator;
+          result.created = session.created;
+          result.name = session.name;
 
-      result.users = [];
-      session.users.forEach((usr) => {
-        if (usr.user.username === req.user.username) {
-          result.code = {
-            hmtl: usr.html,
-            css: usr.css,
-            js: usr.js,
-          };
-        }
-        return result.users.push(usr.user);
-      });
-      return res.send({
-        success: true,
-        result,
-      });
+          result.users = [];
+          session.users.forEach((usr) => {
+            if (usr.user.username === req.user.username) {
+              result.code = {
+                hmtl: usr.html,
+                css: usr.css,
+                js: usr.js,
+              };
+            }
+            return result.users.push(usr.user);
+          });
+          return res.send({
+            success: true,
+            result,
+          });
+        },
+      );
     },
   );
-}; // inseertNewUser
+}; // insertNewUser
 
 module.exports.removeUser = (req, res) => {
   const {
