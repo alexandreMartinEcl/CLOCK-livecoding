@@ -42,7 +42,7 @@ class Content extends PureComponent {
   state = {
     session: {
       opened: false,
-      id: "",
+      hash: "",
       name: "",  
     },
     users: [],
@@ -78,34 +78,55 @@ class Content extends PureComponent {
     this.setState({currentUser: user});
   }
 
-  addUserCode = (userName, html, css, js) => {
-    console.log(`Adding user ${userName} to Content.state`);
+  addUserCode = (username, title, html, css, js) => {
+    console.log(`Adding user ${username} to Content.state`);
     var usersC = this.state.usersCodes.slice();
     usersC.push({
-      lastName: userName,
-      htmlTxt: html,
-      cssTxt: css,
-      jsTxt: js,
+      username: username,
+      title: title,
+      html: html,
+      css: css,
+      js: js,
     });
     this.setState({usersCodes: usersC});
   }
 
-  openNewUser = async (userId) => {
-    console.log(`Getting new user's code: ${userId}`);
-    const res = await getUserCode(this.state.session.id, userId);
+  openNewUser = async (username) => {
+    console.log(`Getting new user's code: ${username}`);
+    var alreadySet = false;
+
+    this.state.usersCodes.forEach((code) => {
+      if (code.username === username) {
+        alreadySet = true;
+      }
+    })
+
+    if (alreadySet) {
+      return;
+    }
+
+    const res = await getUserCode(this.state.session.hash, username);
     console.log("Result: ");
     console.log(res);
 
-    this.addUserCode(userId, res.html, res.css, res.js);
+    if (res.success) {
+      const { user } = res.result;
+      this.addUserCode(user.user.username, user.user.prenom, user.html, user.css, user.js);
+    } else {
+      console.log(res.message);
+      alert(res.message);
+    }
+
   }
 
-  openSession = (code, id, users, name) => {
-    console.log(`Session opened (html: ${code.html}, css: ${code.css}, js: ${code.js}, sessionId: ${id}, sessionName: ${name}, users: `);
+  openSession = (code, hash, users, name) => {
+    console.log(`Session opened (html: ${code.html}, css: ${code.css}, js: ${code.js}, sessionHash: ${hash}, sessionName: ${name}, users: `);
     console.log(users);
 
-    this.addUserCode("My code", code.html, code.css, code.js);
+    this.setState({session: {opened: true, hash: hash, name: name}})
+    this.addUserCode(this.state.currentUser.username, "Mon espace", code.html, code.css, code.js);
 
-    this.setState({session: {opened: true, id, name}, users: users});
+    this.setState({session: {opened: true, hash, name}, users: users});
   };
 
   render() {
@@ -134,7 +155,8 @@ class Content extends PureComponent {
           />
 
           <CodePages
-          users={usersCodes}
+            codes={usersCodes}
+            sessionHash={session.hash}
           />
         </div>
       );

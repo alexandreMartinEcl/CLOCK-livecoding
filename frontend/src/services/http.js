@@ -1,7 +1,7 @@
 import agent from 'superagent';
 import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
-//const base = "https://clock-livecoding.ebm.nymous.io/";
+const base = "https://clock-livecoding.ebm.nymous.io";
 
 function localCreateSession(userid, sessionName){
     return new Promise(resolve => {
@@ -218,19 +218,19 @@ const choiceAgent = {
     online: {
         get: (url) => {
             console.log(getAuthHeaders());
-            return agent.get(url).set(getAuthHeaders()).catch(checkAuthResponse);
+            return agent.get(base + url).set(getAuthHeaders()).catch(checkAuthResponse);
         },
         post: (url) => {
             return {
                 send: (params) => {
-                    return agent.post(url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
+                    return agent.post(base + url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
                 }
             }
         },
         update: (url) => {
             return {
                 send: (params) => {
-                    return agent.update(url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
+                    return agent.update(base + url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
                 }
             }
         },

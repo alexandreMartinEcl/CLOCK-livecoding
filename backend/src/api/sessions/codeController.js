@@ -36,7 +36,7 @@ module.exports.findUserSessionInfo = (req, res) => {
           message: 'Session does not exist',
         });
     }
-    result.success = true;
+
     result.hash = session.hash;
     result.creator = session.creator;
     result.created = session.created;

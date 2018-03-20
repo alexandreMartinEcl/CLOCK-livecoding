@@ -28,9 +28,9 @@ export async function reqGetSession(sessionId) {
     }
 };
 
-export async function updateCodes(sessionId, html, css, js) {
+export async function updateCodes(sessionId, username, html, css, js) {
     console.log("Getting session: " + sessionId );
-    const req = agent.online.put(`${putCodeUrl}/${sessionId}`)
+    const req = agent.online.put(`${putCodeUrl}/${sessionId}/${username}`)
         .send({
             html: html,
             css: css,
@@ -41,6 +41,6 @@ export async function updateCodes(sessionId, html, css, js) {
         console.log(body);
         return body;
     } catch(err) {
-      console.error(err);
+        console.error(err);
     }
 };

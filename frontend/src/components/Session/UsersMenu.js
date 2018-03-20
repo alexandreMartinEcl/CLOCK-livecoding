@@ -33,14 +33,14 @@ class UsersMenu extends PureComponent {
   static defaultProps = {
     users: [
       {
-        id: "alex",
-        lastName: "Martin",
-        firstName: "Alex",
+        username: "alex",
+        nom: "Martin",
+        prenom: "Alex",
       },
       {
-        id: "remy",
-        lastName: "Prioul",
-        firstName: "Remy",
+        username: "remy",
+        nom: "Prioul",
+        prenom: "Remy",
       },
     ]
   };
@@ -54,47 +54,14 @@ class UsersMenu extends PureComponent {
     this.setState({users: this.props.users});
   }
 
-/*  apps = [
-    {
-      name: 'OKLM',
-      url: '//oklm.ebm.nymous.io',
-      logo: logo
-    },
-    {
-      name: 'Redline',
-      url: '//redline.ebm.nymous.io',
-      logo: logo
-    },
-    {
-      name: 'Linkapp',
-      url: '//linkapp.ebm.nymous.io',
-      logo: logo
-    },
-    {
-      name: 'Markus',
-      url: '//markus.ebm.nymous.io',
-      logo: logo
-    },
-    {
-      name: 'SAGG',
-      url: '//sagg.ebm.nymous.io',
-      logo: logo
-    },
-    {
-      name: 'Livecoding',
-      url: '//clock-livecoding.ebm.nymous.io',
-      logo: logo
-    }
-  ];
-*/
   render() {
-    const {classes} = this.props;
+    const {classes, open, closeCallback, anchorEl} = this.props;
 
     return (
       <Popover
-        open={this.props.open}
-        onClose={this.props.closeCallback}
-        anchorEl={this.props.anchorEl}
+        open={open}
+        onClose={closeCallback}
+        anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center'
