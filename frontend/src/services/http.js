@@ -227,10 +227,10 @@ const choiceAgent = {
                 }
             }
         },
-        update: (url) => {
+        put: (url) => {
             return {
                 send: (params) => {
-                    return agent.update(base + url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
+                    return agent.put(base + url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
                 }
             }
         },
