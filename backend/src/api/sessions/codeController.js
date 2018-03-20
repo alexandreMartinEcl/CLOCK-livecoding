@@ -91,7 +91,7 @@ module.exports.findUserCode = (req, res) => {
 module.exports.updateCodeInSession = (req, res) => {
   console.log(`Updating the code for user ${req.user.username} in session ${req.params.hash}`);
   const { html, css, js } = req.body;
-  let usersUpdate = {};
+  let updatedUsers = {};
   Session.find({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
@@ -103,8 +103,9 @@ module.exports.updateCodeInSession = (req, res) => {
           message: 'Session does not exist',
         });
     }
-    usersUpdate = session.users.map((userWithCode) => {
-      if (userWithCode.user.username === req.params.username) {
+
+    updatedUsers = session.users.map((userWithCode) => {
+      if (userWithCode.user.username === req.user.username) {
         const newUserWithCode = Object.assign({}, userWithCode);
         newUserWithCode.html = html;
         newUserWithCode.css = css;
@@ -113,28 +114,26 @@ module.exports.updateCodeInSession = (req, res) => {
       }
       return userWithCode;
     });
-    return usersUpdate;
-  });
 
-  Session.findOneAndUpdate(
-    { hash: req.params.hash },
-    { $set: { users: usersUpdate } },
-    { new: true },
-    (err, session) => {
-      if (err) {
-        return res.send(err);
-      }
-      if (!session) {
-        return res.status(401)
-          .send({
-            success: false,
-            message: 'Session does not exist',
-          });
-      }
-      return res.send({
-        success: true,
-        session,
-      });
-    },
-  );
-}; // putNewCodeForUserWithinSession
+    return Session.findOneAndUpdate(
+      { hash: req.params.hash },
+      { $set: { users: updatedUsers } },
+      { new: true },
+      (err2, session2) => {
+        if (err2) {
+          return res.send(err2);
+        }
+        if (!session2) {
+          return res.status(401)
+            .send({
+              success: false,
+              message: 'Session does not exist',
+            });
+        }
+        return res.send({
+          success: true,
+        });
+      },
+    );
+  });
+}; // updateCodeInSession

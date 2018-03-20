@@ -56,7 +56,15 @@ class CodePage extends PureComponent {
     };
 
     state = {
-        users: [],
+        users: [
+            {
+                username: '',
+                title: 'Mon espace',
+                html: '',
+                css: '',
+                js: '',
+            }
+        ],
         selectedUser: 0,
         codeUpdateOrdered: false,
     };
@@ -78,9 +86,12 @@ class CodePage extends PureComponent {
             user.selectedKey = "html";
             return user;
         });
+        console.log(users[0]);
         this.setState({
             users: users,
+            selectedUser: 0,
         });
+        console.log(this.state);
         console.log("CodePages will mount with htmlTxt: " + this.state.users[this.state.selectedUser].html);
     }
 
@@ -112,6 +123,7 @@ class CodePage extends PureComponent {
             console.log(res.message);
             alert(res.message);
         }
+        this.setState({codeUpdateOrdered: false});
     }
 
     changePage = (tabValue) => {

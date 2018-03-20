@@ -63,6 +63,7 @@ module.exports.create = (req, res) => {
         email,
       },
     }],
+    name: req.body.sessionName || '',
   });
   session.save((err) => {
     if (err) {
