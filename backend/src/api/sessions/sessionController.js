@@ -155,7 +155,7 @@ module.exports.insertNewUser = (req, res) => {
       );
     },
   );
-}; // inseertNewUser
+}; // insertNewUser
 
 module.exports.removeUser = (req, res) => {
   const {
