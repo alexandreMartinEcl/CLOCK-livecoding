@@ -90,22 +90,36 @@ module.exports.insertNewUser = (req, res) => {
   } = req.user;
   const result = {};
 
-  Session.update(
-    { hash: req.params.hash },
-    {
-      $pull: {
-        users: {
-          user: {
-            username,
-          },
-        },
-      },
-    },
-    (err) => {
-      if (err) {
-        return res.send(err);
+  Session.find({ hash: req.params.hash }, (err, session) => {
+    if (err) {
+      return res.send(err);
+    }
+    if (!session) {
+      return res.status(401)
+        .send({
+          success: false,
+          message: 'Session does not exist',
+        });
+    }
+    result.hash = session.hash;
+    result.creator = session.creator;
+    result.created = session.created;
+    result.name = session.name;
+
+    result.users = [];
+    session.users.forEach((usr) => {
+      if (usr.user.username === req.user.username) {
+        result.code = {
+          hmtl: usr.html,
+          css: usr.css,
+          js: usr.js,
+        };
       }
-      return Session.findOneAndUpdate(
+      return result.users.push(usr.user);
+    });
+
+    if (!result.code) {
+      Session.findOneAndUpdate(
         { hash: req.params.hash },
         {
           $push: {
@@ -120,32 +134,28 @@ module.exports.insertNewUser = (req, res) => {
             },
           },
         },
-        (err2, session) => {
+        (err2, session2) => {
           if (err2) {
             return res.send(err2);
           }
-          if (!session) {
+          if (!session2) {
             return res.status(401)
               .send({
                 success: false,
                 message: 'Session does not exist',
               });
           }
-          result.hash = session.hash;
-          result.creator = session.creator;
-          result.created = session.created;
-          result.name = session.name;
-
-          result.users = [];
-          session.users.forEach((usr) => {
-            if (usr.user.username === req.user.username) {
-              result.code = {
-                hmtl: usr.html,
-                css: usr.css,
-                js: usr.js,
-              };
-            }
-            return result.users.push(usr.user);
+          result.code = {
+            html: '',
+            css: '',
+            js: '',
+          };
+          result.users.push({
+            username,
+            role,
+            nom,
+            prenom,
+            email,
           });
           return res.send({
             success: true,
@@ -153,8 +163,12 @@ module.exports.insertNewUser = (req, res) => {
           });
         },
       );
-    },
-  );
+    }
+    return res.send({
+      success: true,
+      result,
+    });
+  });
 }; // insertNewUser
 
 module.exports.removeUser = (req, res) => {
