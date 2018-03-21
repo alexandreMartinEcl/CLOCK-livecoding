@@ -119,7 +119,7 @@ module.exports.insertNewUser = (req, res) => {
     });
 
     if (!result.code) {
-      Session.findOneAndUpdate(
+      return Session.findOneAndUpdate(
         { hash: req.params.hash },
         {
           $push: {
