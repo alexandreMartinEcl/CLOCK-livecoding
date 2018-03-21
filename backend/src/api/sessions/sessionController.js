@@ -66,6 +66,9 @@ module.exports.create = (req, res) => {
     }],
     name: req.body.sessionName || '',
   });
+
+  session.hash = session.hash;
+
   session.save((err) => {
     if (err) {
       return res.send(err);
