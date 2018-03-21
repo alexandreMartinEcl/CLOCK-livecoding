@@ -3,6 +3,7 @@ const Session = require('./sessionModel');
 module.exports = {};
 
 module.exports.findAll = (req, res) => {
+  console.log('Retrieving all sessions');
   Session.find({}, (err, sessions) => {
     if (err) {
       return res.send(err);
@@ -85,21 +86,21 @@ module.exports.create = (req, res) => {
 }; // create
 
 module.exports.insertNewUser = (req, res) => {
+  console.log(`Inserting new user ${req.user.username} in session ${req.params.hash} if not already present`);
   const {
     username, role, nom, prenom, email,
   } = req.user;
   const result = {};
 
-  Session.find({ hash: req.params.hash }, (err, session) => {
+  Session.findOne({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
     }
     if (!session) {
-      return res.status(401)
-        .send({
-          success: false,
-          message: 'Session does not exist',
-        });
+      return res.send({
+        success: false,
+        message: 'Session does not exist',
+      });
     }
     result.hash = session.hash;
     result.creator = session.creator;
@@ -139,11 +140,10 @@ module.exports.insertNewUser = (req, res) => {
             return res.send(err2);
           }
           if (!session2) {
-            return res.status(401)
-              .send({
-                success: false,
-                message: 'Session does not exist',
-              });
+            return res.send({
+              success: false,
+              message: 'Session does not exist',
+            });
           }
           result.code = {
             html: '',
