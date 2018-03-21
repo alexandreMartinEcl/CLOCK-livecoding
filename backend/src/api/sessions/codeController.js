@@ -28,7 +28,7 @@ module.exports.findAllUsersOfSession = (req, res) => {
 module.exports.findUserSessionInfo = (req, res) => {
   console.log(`Getting all info relative to user ${req.user.username} in session ${req.params.hash}`);
   const result = {};
-  Session.find({ hash: req.params.hash }, (err, session) => {
+  Session.findOne({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
     }
@@ -66,7 +66,7 @@ module.exports.findUserSessionInfo = (req, res) => {
 module.exports.findUserCode = (req, res) => {
   console.log(`Getting code from ${req.params.username} for user ${req.user.username} in session ${req.params.hash}`);
   const result = {};
-  Session.find({ hash: req.params.hash }, (err, session) => {
+  Session.findOne({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
     }
@@ -95,7 +95,7 @@ module.exports.updateCodeInSession = (req, res) => {
   console.log(`Updating the code for user ${req.user.username} in session ${req.params.hash}`);
   const { html, css, js } = req.body;
   let updatedUsers = {};
-  Session.find({ hash: req.params.hash }, (err, session) => {
+  Session.findOne({ hash: req.params.hash }, (err, session) => {
     if (err) {
       return res.send(err);
     }
