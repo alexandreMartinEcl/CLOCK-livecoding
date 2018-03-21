@@ -19,7 +19,7 @@ router.get('/download/:hash/:username', codeController.downloadUserCode);
 router.post('/', sessionController.create);
 
 // put requests
-router.put('/:hash/user', sessionController.insertNewUser);
+router.put('/user/:hash', sessionController.insertNewUser);
 
 router.put('/code/:hash', codeController.updateCodeInSession);
 
