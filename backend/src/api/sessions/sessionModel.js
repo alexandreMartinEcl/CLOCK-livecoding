@@ -56,7 +56,7 @@ const codeUserWithinSession = new Schema({
 const sessionSchema = new Schema({
   hash: {
     type: String,
-    default: randomValueBase64(6),
+    required: true,
   },
   created: {
     type: Date,
@@ -75,5 +75,9 @@ const sessionSchema = new Schema({
     required: false,
   },
 }); // sessionSchema
+
+// used for hash generation
+sessionSchema.virtual('hash')
+  .get(() => randomValueBase64(6));
 
 module.exports = mongoose.model('Session', sessionSchema);

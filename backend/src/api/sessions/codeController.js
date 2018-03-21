@@ -109,7 +109,7 @@ module.exports.updateCodeInSession = (req, res) => {
 
     updatedUsers = session.users.map((userWithCode) => {
       if (userWithCode.user.username === req.user.username) {
-        const newUserWithCode = Object.assign({}, userWithCode);
+        const newUserWithCode = JSON.parse(JSON.stringify(userWithCode));
         newUserWithCode.html = html;
         newUserWithCode.css = css;
         newUserWithCode.js = js;
