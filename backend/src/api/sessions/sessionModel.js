@@ -77,9 +77,7 @@ const sessionSchema = new Schema({
 }); // sessionSchema
 
 // used for hash generation
-UserSchema.virtual('hash')
-    .get(function () {
-      return randomValueBase64(6);
-    });
+sessionSchema.virtual('hash')
+  .get(() => randomValueBase64(6));
 
 module.exports = mongoose.model('Session', sessionSchema);
