@@ -91,6 +91,17 @@ class Content extends PureComponent {
     this.setState({usersCodes: usersC});
   }
 
+  removeUserCode = (username) => {
+    console.log(`Removing user ${username} to Content.state`);
+    var usersC = [];
+    this.state.usersCodes.forEach((user)=>{
+      if (user.username !== username) {
+        usersC.push(user);
+      }      
+    });
+    this.setState({usersCodes: usersC});
+  }
+    
   openNewUser = async (username) => {
     console.log(`Getting new user's code: ${username}`);
     var alreadySet = false;
@@ -158,6 +169,7 @@ class Content extends PureComponent {
           <CodePages
             codes={usersCodes}
             sessionHash={session.hash}
+            removeUser={this.removeUserCode}
           />
         </div>
       );

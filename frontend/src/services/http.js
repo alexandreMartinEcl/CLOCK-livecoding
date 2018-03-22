@@ -1,7 +1,8 @@
 import agent from 'superagent';
 import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
-const base = "https://clock-livecoding.ebm.nymous.io";
+//const base = "https://clock-livecoding.ebm.nymous.io";
+const base = "";
 
 function localCreateSession(userid, sessionName){
     return new Promise(resolve => {
@@ -22,18 +23,18 @@ function localCreateSession(userid, sessionName){
                         name: sessionName,
                         users: [
                             {
-                                username: "remy",
-                                role: "intervenant",
-                                nom: "remy",
-                                prenom: "remy",
-                                email: "remy@remy.fr",
+                                user: {
+                                    username: "remy",
+                                    role: "intervenant",
+                                    nom: "remy",
+                                    prenom: "remy",
+                                    email: "remy@remy.fr",
+                                },
+                                html: "",
+                                css: "",
+                                js: "",
                             },
                         ],
-                        code: {
-                            html: "",
-                            css: "",
-                            js: "",
-                        },
                     },
                 },
             });
@@ -195,14 +196,47 @@ function localCheckUser(){
     }
 }
 
+function getUserCode(url){
+    console.log(url);
+    const [, , , , sessionHash, username] = url.split("/");
+    console.log(sessionHash);
+    if(sessionHash === "test"){
+        if (username === "alex") {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve({
+                        body: {
+                            success: true,
+                            result: {
+                                user: {
+                                    user: {
+                                        username: "alex",
+                                        role: "eleve",
+                                        nom: "martin",
+                                        prenom: "alexandre",
+                                        email: "alex@gmail.com",
+                                    },
+                                    html: "<h1 class=title >My owner is Alex</h1>",
+                                    css: ".title{ background-color: alex's color; }",
+                                    js: "Some script from Alex"
+                                },
+                            },
+                        },
+                    });
+                }, 1000);
+            });
+        }
+    }
+}
+
 const choiceAgent = {
     local: {
         get: (url) => {
-            if (url.startsWith('/api/sessions')) {
-                return localGetSession(url);
-            }
             if (url === '/api/users') {
                 return localCheckUser();
+            }
+            if (url.startsWith("/api/sessions/code")) {
+                return getUserCode(url);
             }
         },
         post: (url) => {
@@ -213,7 +247,16 @@ const choiceAgent = {
                     }
                 }
             }
-        }
+        },
+        put: (url) => {
+            if (url.startsWith('/api/sessions')) {
+                return {
+                    send: (params={}) => {
+                        return localGetSession(url);
+                    }
+                }
+            }
+        },
     },
     online: {
         get: (url) => {
@@ -229,7 +272,7 @@ const choiceAgent = {
         },
         put: (url) => {
             return {
-                send: (params) => {
+                send: (params={}) => {
                     return agent.put(base + url).set(getAuthHeaders()).send(params).catch(checkAuthResponse);
                 }
             }

@@ -1,6 +1,6 @@
 import agent from '../services/http';
 
-const getUrl = '/api/sessions/code';
+const getUrl = '/api/sessions/user';
 const createUrl = '/api/sessions';
 const putCodeUrl = '/api/sessions/code';
 
@@ -18,7 +18,7 @@ export async function reqCreateSession(sessionName) {
 
 export async function reqGetSession(sessionId) {
     console.log("Getting session: " + sessionId);
-    const req = agent.online.get(getUrl + "/" + sessionId);
+    const req = agent.online.put(getUrl + "/" + sessionId).send({});
     try {
         const { body } = await req;
         console.log(body);

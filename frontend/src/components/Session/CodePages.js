@@ -40,6 +40,7 @@ class CodePage extends PureComponent {
             js: PropTypes.string,
         })).isRequired,
         sessionHash: PropTypes.string.isRequired,
+        removeUser: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
@@ -95,6 +96,14 @@ class CodePage extends PureComponent {
         console.log("CodePages will mount with htmlTxt: " + this.state.users[this.state.selectedUser].html);
     }
 
+    componentDidUpdate(){
+        console.log("did update");
+        if (this.state.users[this.state.selectedUser].selectedKey ==="render") {
+            console.log("we try this");
+            this.makeIframe();
+        }
+    }
+
     handleChange = (code) => {
         var users = this.state.users.slice();
         const slctUser = this.state.selectedUser;
@@ -141,6 +150,10 @@ class CodePage extends PureComponent {
             console.log("Changed for: js");
             users[this.state.selectedUser].selectedKey = "js";
             this.setState({ users: users });
+        } else if (tabValue === 3) {
+            console.log("Changed for: render");
+            users[this.state.selectedUser].selectedKey = "render";
+            this.setState({ users: users });
         }
     }
 
@@ -166,6 +179,47 @@ class CodePage extends PureComponent {
         this.setState({ selectedUser: tabValue });
     }
 
+    buildIframeContent = (slctUser) => {
+        console.log(`Building render`);
+        var {html, css, js} = this.state.users[slctUser];
+        var base_tpl ="".concat(
+            "<!doctype html>\n",
+            "<html>\n\t",
+            "<head>\n\t\t",
+            "<meta charset=\"utf-8\">\n\t\t",
+            "<title>Test</title>\n\n\t\t\n\t",
+            "</head>\n\t",
+            "<body>\n\t\n\t",
+            "</body>\n",
+            "</html>");
+            		// HTML
+		var src = base_tpl.replace('</body>', `${html}</body>`);
+		
+		// CSS
+		css = `<style>${css}</style>`;
+		src = src.replace('</head>',`${css}</head>`);
+		
+		// Javascript
+		js = `<script>${js}</script>`;
+		src = src.replace('</body>', `${js}</body>`);
+		
+        return src;
+
+    }
+
+    makeIframe = () => {
+        var source = this.buildIframeContent(this.state.selectedUser);
+		
+        var iframe = document.querySelector('iframe'),
+            iframe_doc = iframe.contentDocument;
+        
+        iframe_doc.open();
+        iframe_doc.write(source);
+        iframe_doc.close();                            
+
+        return;
+    }
+
     render() {
         const user = this.state.users[this.state.selectedUser];
         return (
@@ -175,30 +229,37 @@ class CodePage extends PureComponent {
                 handleTabChange={this.changeUser}/>
 
                 <TabBar
-                labels={["html", "css", "js"]}
+                labels={["html", "css", "js", "render"]}
                 handleTabChange={this.changePage}
                 forcedTab={this.keyToTabValue[user.selectedKey]}
                 />
 
-                <AceEditor
-                mode={this.keyToMode[user.selectedKey]}
-                theme="tomorrow_night"
-                name="codeEditor"
-                onChange={this.handleChange}
-                fontSize={14}
-                showPrintMargin={true}
-                showGutter={true}
-                highlightActiveLine={true}
-                value={user[user.selectedKey]}
-                setOptions={{
-                    enableBasicAutocompletion: true,
-                    enableLiveAutocompletion: true,
-                    enableSnippets: false,
-                    showLineNumbers: true,
-                    tabSize: 2,
-                }}
-                width={'100%'}
-                />
+                {user.selectedKey === "render" ? 
+                    (
+                        <iframe title='iframe' width={'100%'}/>
+                    ) : (
+                        <AceEditor
+                        mode={this.keyToMode[user.selectedKey]}
+                        theme="tomorrow_night"
+                        name="codeEditor"
+                        onChange={this.handleChange}
+                        fontSize={14}
+                        showPrintMargin={true}
+                        showGutter={true}
+                        highlightActiveLine={true}
+                        value={user[user.selectedKey]}
+                        setOptions={{
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: false,
+                            showLineNumbers: true,
+                            tabSize: 2,
+                        }}
+                        width={'100%'}
+                        />
+                    )
+                }
+
             </div>
         );
     }
