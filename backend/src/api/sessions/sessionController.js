@@ -1,5 +1,15 @@
 const Session = require('./sessionModel');
 
+const crypto = require('crypto');
+
+const randomValueBase64 = (len) => {
+  const randBytes = crypto.randomBytes(Math.ceil((len * 3) / 4));
+  return randBytes.toString('base64')
+    .slice(0, len)
+    .replace(/\+/g, '0')
+    .replace(/\//g, '0');
+}; // randomValueBase64
+
 module.exports = {};
 
 module.exports.findAll = (req, res) => {
@@ -65,9 +75,8 @@ module.exports.create = (req, res) => {
       },
     }],
     name: req.body.sessionName || '',
+    hash: randomValueBase64(6),
   });
-
-  session.hash = session.hash;
 
   session.save((err) => {
     if (err) {
