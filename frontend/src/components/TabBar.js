@@ -1,6 +1,11 @@
-import React, {PureComponent} from 'react';
+import React, {PureComponent, Fragment} from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {AppBar, Tabs, Tab, withStyles} from 'material-ui';
+import Icon from 'material-ui/Icon';
+import Close from 'material-ui-icons/Close';
+import Refresh from 'material-ui-icons/Refresh';
+import Toolbar from 'material-ui/Toolbar';
 
 const styles = {};
 
@@ -10,11 +15,12 @@ class TabBar extends PureComponent {
     labels: PropTypes.arrayOf(PropTypes.string),
     handleTabChange: PropTypes.func,
     forcedTab: PropTypes.number,
+    closable: PropTypes.bool
   };
 
-  static defaultProps = {
+  /*static defaultProps = {
     labels: ["User 1", "User 2", "User 3"]
-  };
+  };*/
 
   state = {
     selectedTab: 0
@@ -32,15 +38,24 @@ class TabBar extends PureComponent {
     } else {
       tabVal = this.state.selectedTab;
     }
+    
+    const { classes } = this.props;
+    
     return (
       <AppBar position="static">
         <Tabs
           value={tabVal}
           onChange={this.handleChange}
-          fullWidth>
-
-          {this.props.labels.map((label, i) => <Tab label={label} />)}
-        </Tabs>
+          fullWidth
+          >     
+          {this.props.labels.map((label, i) => (
+            <Fragment>
+              <Tab label={label} />
+              {this.props.closable && <Close color="secondary" />}
+            </Fragment>
+          ))}        
+        </Tabs>  
+        
       </AppBar>
     );
   }

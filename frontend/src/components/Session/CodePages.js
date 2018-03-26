@@ -1,7 +1,11 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui';
+import { withStyles, Tabs, AppBar } from 'material-ui';
 import AceEditor from 'react-ace';
+import Close from 'material-ui-icons/Close';
+import FileDownload from 'material-ui-icons/FileDownload';
+import Refresh from 'material-ui-icons/Refresh';
+import Toolbar from 'material-ui/Toolbar';
 
 import 'brace/mode/html';
 import 'brace/mode/css';
@@ -224,9 +228,12 @@ class CodePage extends PureComponent {
         const user = this.state.users[this.state.selectedUser];
         return (
             <div className={this.props.className}>
-                <TabBar
-                labels={this.props.codes.map( (code) => (code.title))} 
-                handleTabChange={this.changeUser}/>
+                <TabBar 
+                    handleTabChange={this.changeUser}
+                    labels={this.props.codes.map( (code) => (code.title))}
+                    closable
+                  />
+
 
                 <TabBar
                 labels={["html", "css", "js", "render"]}
