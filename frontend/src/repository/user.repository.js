@@ -6,8 +6,7 @@ const sessionUrl = '/api/sessions/code';
 
 export async function backendCheckUser() {
     console.log("Checking user with backend");
-    //const req = agent.online.get(usersUrl);
-    const req = agent.local.get(usersUrl);
+    const req = agent.online.get(usersUrl);
     try {
         const { body } = await req;
         console.log("User checked :");
@@ -21,8 +20,7 @@ export async function backendCheckUser() {
 
 export async function getUserCode(sessionId, userName) {
     console.log(`Getting new user's code, user: ${userName}, session: ${sessionId}`);
-    //const req = agent.online.get(`${sessionUrl}/${sessionId}/${userName}`);
-    const req = agent.local.get(`${sessionUrl}/${sessionId}/${userName}`);
+    const req = agent.online.get(`${sessionUrl}/${sessionId}/${userName}`);
     try {
         const { body } = await req;
         console.log(body);
