@@ -6,6 +6,7 @@ import Icon from 'material-ui/Icon';
 import Close from 'material-ui-icons/Close';
 import Refresh from 'material-ui-icons/Refresh';
 import Toolbar from 'material-ui/Toolbar';
+import ClosableTab from './ClosableTab.js';
 
 const styles = {};
 
@@ -49,10 +50,7 @@ class TabBar extends PureComponent {
           fullWidth
           >     
           {this.props.labels.map((label, i) => (
-            <Fragment>
-              <Tab label={label} />
-              {this.props.closable && <Close color="secondary" />}
-            </Fragment>
+            <ClosableTab label={label} closable={this.props.closable && i !== 0} />
           ))}        
         </Tabs>  
         

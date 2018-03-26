@@ -6,7 +6,8 @@ const putCodeUrl = '/api/sessions/code';
 
 export async function reqCreateSession(sessionName) {
     console.log("Creating session");
-    const req = agent.online.post(createUrl).send({sessionName: sessionName});
+    //const req = agent.online.post(createUrl).send({sessionName: sessionName});
+    const req = agent.local.post(createUrl).send({sessionName: sessionName});
     try {
         const { body } = await req;
         console.log(body);
@@ -18,7 +19,8 @@ export async function reqCreateSession(sessionName) {
 
 export async function reqGetSession(sessionId) {
     console.log("Getting session: " + sessionId);
-    const req = agent.online.put(getUrl + "/" + sessionId).send({});
+    //const req = agent.online.put(getUrl + "/" + sessionId).send({});
+    const req = agent.local.put(getUrl + "/" + sessionId).send({});
     try {
         const { body } = await req;
         console.log(body);
@@ -30,7 +32,8 @@ export async function reqGetSession(sessionId) {
 
 export async function updateCodes(sessionId, username, html, css, js) {
     console.log(`Updating session: ${sessionId}, user: ${username}`);
-    const req = agent.online.put(`${putCodeUrl}/${sessionId}`)
+    //const req = agent.online.put(`${putCodeUrl}/${sessionId}`)
+    const req = agent.local.put(`${putCodeUrl}/${sessionId}`)
         .send({
             html: html,
             css: css,
