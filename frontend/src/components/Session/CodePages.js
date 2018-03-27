@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui';
 import AceEditor from 'react-ace';
 
+import ReactKonami from "react-konami";
+
 import 'brace/mode/html';
 import 'brace/mode/css';
 import 'brace/mode/javascript';
@@ -74,6 +76,7 @@ class CodePage extends PureComponent {
         ],
         selectedUser: 0,
         codeUpdateOrdered: false,
+        konami: false,
     };
 
     keyToMode = {
@@ -225,21 +228,32 @@ class CodePage extends PureComponent {
 
     makeIframe = () => {
         var source = this.buildIframeContent(this.state.selectedUser);
-		
+        
         var iframe = document.querySelector('iframe'),
             iframe_doc = iframe.contentDocument;
-        
-        iframe_doc.open();
-        iframe_doc.write(source);
-        iframe_doc.close();                            
 
+        if(this.state.konami){
+            iframe.setAttribute("src", "https://rickrolled.fr/");
+            iframe_doc.clear()
+        } else {
+            iframe_doc.open();
+            iframe_doc.write(source);
+            iframe_doc.close();    
+        }
         return;
+    }
+
+    lol = () => {
+        console.log("Never gonna let you down...");
+        this.setState({konami: true});
+        alert("Never gonna give you up...");
     }
 
     render() {
         const user = this.state.users[this.state.selectedUser];
         return (
             <div className={this.props.className}>
+                <ReactKonami easterEgg={this.lol}/>
                 <UsersTabBar 
                     handleTabChange={this.changeUser}
                     labels={this.props.codes.map( (code) => ({label: code.title, id: code.username}))}
