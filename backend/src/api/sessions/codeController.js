@@ -55,7 +55,7 @@ module.exports.findUserSessionInfo = (req, res) => {
     session.users.forEach((usr) => {
       if (usr.user.username === req.user.username) {
         result.code = {
-          hmtl: usr.html,
+          html: usr.html,
           css: usr.css,
           js: usr.js,
         };
@@ -94,7 +94,8 @@ module.exports.findUserCode = (req, res) => {
       }
     });
 
-    if (result.user.user.role !== 'intervenant'
+    if (result.user.user.username !== req.user.username
+      && result.user.role !== 'intervenant'
       && req.user.role !== 'intervenant'
       && req.user.role !== 'administrateur') {
       return res.status(401)
@@ -142,7 +143,7 @@ module.exports.updateCodeInSession = (req, res) => {
     }
 
     updatedUsers = session.users.map((userWithCode) => {
-      if (userWithCode.user.username === req.user.username) {
+      if (userWithCode.user.username === req.params.username) {
         const newUserWithCode = JSON.parse(JSON.stringify(userWithCode));
         newUserWithCode.html = html;
         newUserWithCode.css = css;

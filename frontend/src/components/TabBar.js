@@ -58,7 +58,7 @@ class UsersTabBar extends PureComponent {
           >     
           {this.props.labels.map((label, i) => (
             <ClosableTab label={label} closable={this.props.closable && i !== 0} />
-          ))}        
+          ))}
           
           { withButtons ?
             (

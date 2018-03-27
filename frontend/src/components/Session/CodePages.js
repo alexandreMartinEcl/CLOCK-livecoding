@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui';
 import AceEditor from 'react-ace';
+import ReactKonami from "react-konami";
 
 import 'brace/mode/html';
 import 'brace/mode/css';
@@ -74,6 +75,8 @@ class CodePage extends PureComponent {
         ],
         selectedUser: 0,
         codeUpdateOrdered: false,
+        toasted: false,
+        konami: false,
     };
 
     keyToMode = {
@@ -88,6 +91,9 @@ class CodePage extends PureComponent {
         'js': 2,
     }
 
+    /** 
+     * Prepare component with props codes
+    */
     componentWillMount(){
         const users = this.props.codes.map((user) => {
             user.selectedKey = "html";
@@ -100,16 +106,30 @@ class CodePage extends PureComponent {
             selectedUser: 0,
         });
         console.log(this.state);
-        console.log("CodePages will mount with htmlTxt: " + this.state.users[this.state.selectedUser].html);
+        console.log("CodePages will mount with html: " + this.state.users[this.state.selectedUser].html);
     }
 
+    /** 
+     * Prepare Iframe if the render tab is wanted
+     * (could be on user change also, that's why not called in tabChange)
+    */
     componentDidUpdate(){
-        console.log("Code pages did update: loading render");
         if (this.state.users[this.state.selectedUser].selectedKey ==="render") {
             this.makeIframe();
         }
     }
 
+    /**
+     * Handle if the code in Ace is changed
+     * code is the current value of Ace
+     * Current value depends on the tabs, so we get the selectedUser
+     * The user can update online only his own code, except if his role is 'intervenant'
+     * If he is not allowed, we alert him once
+     * Else, 
+     *  We only update every 3 seconds
+     *  If update is already ordered, it wont do anything
+     *  The code updated is the code whom the user tab is active
+     */
     handleChange = (code) => {
         const slctUser = this.state.selectedUser;
         if (slctUser === 0 || this.props.currUserRole === "intervenant") {
@@ -123,17 +143,23 @@ class CodePage extends PureComponent {
                 
                 const updatedUsers = this.state.users;
                 updatedUsers[slctUser].codeUpdateOrdered = true;
-                this.setState({users: updatedUsers});                
-//                this.setState({codeUpdateOrdered: true});
+                this.setState({users: updatedUsers});
                 setTimeout(() => {
                     this.updateUserCodes(slctUser)
                 }, 3000);
             }
         } else {
+            if (!this.state.toasted) {
+                this.setState({toasted: true});
+                alert(`What you write here will note be updated online`);
+            }
             console.log("Not allowed to update this code");
         }
     }
 
+    /**
+     * Will launch a put for updating the online code
+     */
     updateUserCodes = async (slctUser) => {
         const {username, html, css, js} = this.state.users[slctUser]
         const res = await updateCodes(this.props.sessionHash, username, html, css, js);
@@ -151,6 +177,12 @@ class CodePage extends PureComponent {
 //        this.setState({codeUpdateOrdered: false});
     }
 
+    /**
+     * Updates the Ace editor if the current user changes the text tab
+     * (HTML, CSS, JS, RENDER)
+     * Depending on the selectedUser value, will change the displayed text
+     * As well as Ace's edition mode 
+     */
     changePage = (tabValue) => {
         console.log(`Changed tab: ${tabValue}`);
         var users = this.state.users.slice();
@@ -173,8 +205,18 @@ class CodePage extends PureComponent {
         }
     }
 
+    /**
+     * Updates the Ace editor if the current user changes the user tab
+     * (My space, user1, etc.)
+     * Depending on the key of the new selectedUser, will change for the precedently loaded page
+     * As well as Ace's edition mode 
+     */
     changeUser = (tabValue) => {
         console.log(`Changed user: ${tabValue}`);
+        
+        // When new user, this.props.codes is bigger
+        // condition is true the first time after that
+        // that is why we initiate these new users
         if (tabValue >= this.state.users.length) {
             const allUsers = this.props.codes.map((code) => {
                 code.selectedKey = "html";
@@ -195,6 +237,12 @@ class CodePage extends PureComponent {
         this.setState({ selectedUser: tabValue });
     }
 
+    /**
+     * return string
+     * Building the Iframe content
+     * Set up a correct html page
+     * And adds to it the css and js contents
+     */
     buildIframeContent = (slctUser) => {
         console.log(`Building render`);
         var {html, css, js} = this.state.users[slctUser];
@@ -223,23 +271,44 @@ class CodePage extends PureComponent {
 
     }
 
+    /**
+     * Look for the existing Iframe
+     * Load the code content to it
+     * Called after componentDidMount, then Iframe actually exists when Render tab asked
+     * If state.konami = true : just makes the iframe load a webpage
+     */
     makeIframe = () => {
         var source = this.buildIframeContent(this.state.selectedUser);
-		
+        
         var iframe = document.querySelector('iframe'),
             iframe_doc = iframe.contentDocument;
-        
-        iframe_doc.open();
-        iframe_doc.write(source);
-        iframe_doc.close();                            
 
+        if(this.state.konami){
+            iframe.setAttribute("src", "https://rickrolled.fr/");
+            iframe_doc.clear()
+        } else {
+            iframe_doc.open();
+            iframe_doc.write(source);
+            iframe_doc.close();    
+        }
         return;
+    }
+
+    /**
+     * Called when konami code done
+     * Replacce state.konami to true, so Iframe ill always load a specific wab page
+     */
+    konamiDone = () => {
+        console.log("Never gonna let you down...");
+        this.setState({konami: true});
+        alert("Never gonna give you up...");
     }
 
     render() {
         const user = this.state.users[this.state.selectedUser];
         return (
             <div className={this.props.className}>
+                <ReactKonami easterEgg={this.konamiDone}/>
                 <UsersTabBar 
                     handleTabChange={this.changeUser}
                     labels={this.props.codes.map( (code) => ({label: code.title, id: code.username}))}

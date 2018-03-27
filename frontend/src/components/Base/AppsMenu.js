@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import {GridList, Popover, withStyles} from 'material-ui';
 
 import AppIcon from './AppIcon';
-import logo from '../../logo.svg'
+import logo_clock from '../../images/logo-clock.png';
+import logo_linkapp from '../../images/logo-linkapp.png';
+import logo_markus from '../../images/logo-markus.png';
+import logo_oklm from '../../images/logo-oklm.png';
+import logo_redline from '../../images/logo-redline.png';
+import logo_sagg from '../../images/logo-sagg.png';
 
 const styles = theme => ({
   root: {
@@ -26,32 +31,32 @@ class AppsMenu extends PureComponent {
     {
       name: 'OKLM',
       url: '//oklm.ebm.nymous.io',
-      logo: logo
+      logo: logo_oklm
     },
     {
       name: 'Redline',
       url: '//redline.ebm.nymous.io',
-      logo: logo
+      logo: logo_redline
     },
     {
       name: 'Linkapp',
       url: '//linkapp.ebm.nymous.io',
-      logo: logo
+      logo: logo_linkapp
     },
     {
       name: 'Markus',
       url: '//markus.ebm.nymous.io',
-      logo: logo
+      logo: logo_markus
     },
     {
       name: 'SAGG',
       url: '//sagg.ebm.nymous.io',
-      logo: logo
+      logo: logo_sagg
     },
     {
       name: 'Livecoding',
       url: '//clock-livecoding.ebm.nymous.io',
-      logo: logo
+      logo: logo_clock
     }
   ];
 
@@ -74,7 +79,7 @@ class AppsMenu extends PureComponent {
         <div className={classes.root}>
           <GridList cellHeight={100} cols={3}>
             {this.apps.map(app => (
-              <AppIcon key={app.url} logo={app.logo} name={app.name} href={app.url}/>
+              <AppIcon key={app.url} logo={app.logo} appName={app.name} href={app.url}/>
             ))}
           </GridList>
         </div>

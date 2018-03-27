@@ -58,11 +58,19 @@ class IsOk extends React.PureComponent {
     this.setState({[event.target.id]: event.target.value});
   }
 
+  /**
+   * Récupère une session en ligne
+   * Puis demande son ouverture sur le frontend en appelant une fonction appartenant à Content
+   */
   getSession = async () => {
     const res = await reqGetSession(this.state.sessionHash);
     this.openSession(res, "found");
   }
 
+  /**
+   * Créer une nouvelle session en ligne
+   * Puis demande son ouverture sur le frontend en appelant une fonction appartenant à Content
+   */
   createSession = async () => {
     const res = await reqCreateSession(this.state.sessionName);
     res.result.code = {
@@ -77,6 +85,9 @@ class IsOk extends React.PureComponent {
     this.openSession(res, "created");
   }
 
+  /**
+   * Demande l'ouverture d'une session sur le frontend en appelant une fonction appartenant à Content
+   */
   openSession = (res, adj) => {
     if (res.success) {
       console.log(`Session ${adj}`);
