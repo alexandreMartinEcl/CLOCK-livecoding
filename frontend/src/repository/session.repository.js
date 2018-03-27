@@ -30,8 +30,7 @@ export async function reqGetSession(sessionId) {
 
 export async function updateCodes(sessionId, username, html, css, js) {
     console.log(`Updating session: ${sessionId}, user: ${username}`);
-//    const req = agent.online.put(`${putCodeUrl}/${sessionId}/${username}`)
-    const req = agent.online.put(`${putCodeUrl}/${sessionId}`)
+    const req = agent.online.put(`${putCodeUrl}/${sessionId}/${username}`)
         .send({
             html: html,
             css: css,
