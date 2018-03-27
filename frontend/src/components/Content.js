@@ -163,7 +163,7 @@ class Content extends PureComponent {
     return res;
   }
 
-  userNotWatchable = (user) => {
+  userWatchable = (user) => {
     if (user.role === 'intervenant') {
       return true;
     } else if (this.state.currentUser.role === 'intervenant' || this.state.currentUser.role === 'administrateur') {
@@ -178,12 +178,16 @@ class Content extends PureComponent {
     console.log(`Getting new user's code: ${username}`);
 
     if (this.userAlreadyLoaded(username)) {
-      console.log(`Code already here`);
+      const msg = `User's code already loaded`;
+      console.log(msg);
+      alert(msg);
       return;
     }
 
     if (!this.userWatchable(user)) {
-      console.log(`You do not have permission to see `);
+      const msg = `You do not have permission to see `;
+      console.log(msg);
+      alert(msg);
       return;
     }
 
