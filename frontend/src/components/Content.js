@@ -59,6 +59,7 @@ class Content extends PureComponent {
     anchorEl: null,
   };
 
+  //used for opening users menu
   button = null;
 
   handleUsersMenuClick = () => {
@@ -74,27 +75,20 @@ class Content extends PureComponent {
     });
   };
 
+  /**
+   * set the user data who just connected to the app
+   * called in IdentityResp after requesting the backend with the token
+   * user = {username, role, prenom, nom, email}
+   */
   setCurrentUser = (user) => {
     console.log("Updating currentUser");
     this.setState({currentUser: user});
   }
 
-  refreshUser = async (username) => {
-    console.log(`Updating ${username}'s code`);
-    const res = await getUserCode(this.state.session.hash, username);
-
-    console.log("Result: ");
-    console.log(res);
-
-    if (res.success) {
-      const { user } = res.result;
-      this.updateUserCode(user.user.username, user.html, user.css, user.js);
-    } else {
-      console.log(res.message);
-      alert(res.message);
-    }
-  }
-
+  /**
+   * download the three files of the code of a certain loaded user
+   * zipped
+   */
   downloadCode = (username) => {
     console.log(`Getting ${username}'s zipped code`);
     var usersC = this.state.usersCodes;
@@ -110,6 +104,9 @@ class Content extends PureComponent {
     downloadZip(html, css, js, username, this.state.session.hash);
   }
 
+  /**
+   *  change the code from an already loaded user
+   */
   updateUserCode = (username, html, css, js) => {
     console.log(`Updating user ${username} to Content.state`);
     var usersC = this.state.usersCodes.slice();
@@ -128,6 +125,9 @@ class Content extends PureComponent {
     this.setState({usersCodes: usersC});
   }
 
+  /**
+   *  adds a new user tab
+   */
   addUserCode = (username, title, html, css, js) => {
     console.log(`Adding user ${username} to Content.state`);
     var usersC = this.state.usersCodes.slice();
@@ -141,6 +141,10 @@ class Content extends PureComponent {
     this.setState({usersCodes: usersC});
   }
 
+  /**
+   *  remove from users tabs one the one whom the username is asked
+   *  called in CodePages > UsersTabs > ClosableTab
+   */
   removeUserCode = (username) => {
     console.log(`Removing user ${username} from Content.state`);
     var usersC = [];
@@ -152,6 +156,11 @@ class Content extends PureComponent {
     this.setState({usersCodes: usersC});
   }
   
+  /**
+   *  return boolean
+   * if the asked code is already loaded
+   * it cannot be asked again
+   */
   userAlreadyLoaded = (username) => {
     var res = false;
 
@@ -163,6 +172,12 @@ class Content extends PureComponent {
     return res;
   }
 
+  /**
+   *  return boolean
+   * if user is 'intervenant', it can access all codes
+   * if the asked code is from 'intervenant', it is ok
+   * else it cannot be loaded
+   */
   userWatchable = (user) => {
     if (user.role === 'intervenant') {
       return true;
@@ -173,20 +188,23 @@ class Content extends PureComponent {
     }
   }
 
-  openNewUser = async (user) => {
-    const {username} = user;
+  /**
+   *  ask for a new user's code
+   * called in UsersMenu > UserIcon 
+   * will just alert if already loaded or if the connected user is not allowed
+   * will add the user to new user tab if success
+   * askedUser = {username: oneUsername}
+   */
+  openNewUser = async (askedUser) => {
+    const {username} = askedUser;
     console.log(`Getting new user's code: ${username}`);
 
     if (this.userAlreadyLoaded(username)) {
       const msg = `User's code already loaded`;
-      console.log(msg);
       alert(msg);
       return;
-    }
-
-    if (!this.userWatchable(user)) {
+    } else if (!this.userWatchable(askedUser)) {
       const msg = `You do not have permission to see `;
-      console.log(msg);
       alert(msg);
       return;
     }
@@ -205,6 +223,35 @@ class Content extends PureComponent {
 
   }
 
+  /**
+   *  ask for a loaded user's refreshed code
+   * called in CodePages > UsersTabBar
+   * will replace the user's code to existing user tab if success
+   * askedUser = {username: oneUsername}
+   */
+  refreshUser = async (username) => {
+    console.log(`Updating ${username}'s code`);
+    const res = await getUserCode(this.state.session.hash, username);
+
+    console.log("Result: ");
+    console.log(res);
+
+    if (res.success) {
+      const { user } = res.result;
+      this.updateUserCode(user.user.username, user.html, user.css, user.js);
+    } else {
+      console.log(res.message);
+      alert(res.message);
+    }
+  }
+
+  /**
+   *  Open a new session after user is authentified
+   * called in IdentityResp > IsOk
+   * will replace IdentityResp with CodePages in render
+   * will fill CodePages with the user's tab, and his session data
+   * requested from back : code = {html, css, js}, users=[user:{username, firstName}]
+   */
   openSession = (code, hash, users, name) => {
     name = name || hash;
     console.log(`Session opened (html: ${code.html}, css: ${code.css}, js: ${code.js}, sessionHash: ${hash}, sessionName: ${name}, users: `);

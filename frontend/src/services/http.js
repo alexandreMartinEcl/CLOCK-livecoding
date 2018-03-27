@@ -1,9 +1,18 @@
 import agent from 'superagent';
 import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
+/**
+ * Cette classe permet de bousculer du mode online à local facilement
+ * Chaque requête réalisée dans les .repository passe par ici
+ * Si agent.local, cela renvoie aux fonctions ci-dessous renvoyant un exemple donnée de réponse
+ * Si agent.online, cela renvoie à superagent auquel on ajoute le middleware rédigé par une autre équipe d'EBM
+ *  Ce middleware permet l'authentifiation à chaque requête
+ */
+
+
 // Swap base if you want to access online backend with local frontend
-// const base = "https://clock-livecoding.ebm.nymous.io";
-const base = "";
+ const base = "https://clock-livecoding.ebm.nymous.io";
+//const base = "";
 
 function localCreateSession(userid, sessionName){
     return new Promise(resolve => {
