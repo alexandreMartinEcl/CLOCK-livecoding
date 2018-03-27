@@ -55,7 +55,7 @@ module.exports.findUserSessionInfo = (req, res) => {
     session.users.forEach((usr) => {
       if (usr.user.username === req.user.username) {
         result.code = {
-          hmtl: usr.html,
+          html: usr.html,
           css: usr.css,
           js: usr.js,
         };
