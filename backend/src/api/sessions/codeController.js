@@ -94,13 +94,13 @@ module.exports.findUserCode = (req, res) => {
       }
     });
 
-    if (result.user.role !== 'intervenant'
+    if (result.user.user.role !== 'intervenant'
       && req.user.role !== 'intervenant'
       && req.user.role !== 'administrateur') {
       return res.status(401)
         .send({
           success: false,
-          message: 'Update not allowed',
+          message: 'Access denied',
         });
     }
     return res.send({
