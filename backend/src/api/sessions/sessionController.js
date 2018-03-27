@@ -17,7 +17,11 @@ module.exports.findAll = (req, res) => {
   console.log('Retrieving all sessions');
   Session.find({}, (err, sessions) => {
     if (err) {
-      return res.send(err);
+      return res.status(401)
+        .send({
+          success: false,
+          message: err.message,
+        });
     }
     if (!sessions) {
       return res.status(401)
@@ -39,7 +43,11 @@ module.exports.findOne = (req, res) => {
     { hash: req.params.hash },
     (err, session) => {
       if (err) {
-        return res.send(err);
+        return res.status(401)
+          .send({
+            success: false,
+            message: err.message,
+          });
       }
       if (!session) {
         return res.status(401)
@@ -82,7 +90,11 @@ module.exports.create = (req, res) => {
 
   session.save((err) => {
     if (err) {
-      return res.send(err);
+      return res.status(401)
+        .send({
+          success: false,
+          message: err.message,
+        });
     }
 
     return res.send({
@@ -101,7 +113,11 @@ module.exports.insertNewUser = (req, res) => {
 
   Session.findOne({ hash: req.params.hash }, (err, session) => {
     if (err) {
-      return res.send(err);
+      return res.status(401)
+        .send({
+          success: false,
+          message: err.message,
+        });
     }
     if (!session) {
       return res.send({
@@ -144,7 +160,11 @@ module.exports.insertNewUser = (req, res) => {
         },
         (err2, session2) => {
           if (err2) {
-            return res.send(err2);
+            return res.status(401)
+              .send({
+                success: false,
+                message: err2.message,
+              });
           }
           if (!session2) {
             return res.send({
@@ -201,7 +221,11 @@ module.exports.removeUser = (req, res) => {
     { runValidators: true },
     (err) => {
       if (err) {
-        return res.send(err);
+        return res.status(401)
+          .send({
+            success: false,
+            message: err.message,
+          });
       }
       return res.send({
         success: true,
@@ -223,7 +247,11 @@ module.exports.delete = (req, res) => {
     { hash: req.params.hash },
     (err) => {
       if (err) {
-        return res.send(err);
+        return res.status(401)
+          .send({
+            success: false,
+            message: err.message,
+          });
       }
       return res.send({
         success: true,

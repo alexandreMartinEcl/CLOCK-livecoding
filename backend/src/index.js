@@ -22,15 +22,6 @@ app.use('/api', require('ebm-auth/dist/express').requireAuth({
 
 app.use(serveStatic('./public'));
 
-app.use((err, req, res) => {
-  res.status(err.status || 500);
-  res.render('error', {
-    success: false,
-    message: err.message,
-    error: err,
-  });
-});
-
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
