@@ -224,9 +224,12 @@ class CodePage extends PureComponent {
         const user = this.state.users[this.state.selectedUser];
         return (
             <div className={this.props.className}>
-                <TabBar
-                labels={this.props.codes.map( (code) => (code.title))} 
-                handleTabChange={this.changeUser}/>
+                <TabBar 
+                    handleTabChange={this.changeUser}
+                    labels={this.props.codes.map( (code) => (code.title))}
+                    closable
+                  />
+
 
                 <TabBar
                 labels={["html", "css", "js", "render"]}

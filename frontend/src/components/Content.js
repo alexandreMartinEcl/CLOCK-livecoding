@@ -25,7 +25,7 @@ const styles = theme => ({
     paddingTop: theme.spacing.unit * 5,
   },
   chip: {
-    margin: '15px'
+    margin: '5px'
   }
 });
 
@@ -148,6 +148,7 @@ class Content extends PureComponent {
       return (
         <div className={className}>
           <Chip label={`Session ${session.name}`} className={classes.chip} />
+          <Chip label={`CODE : ${session.hash}`} className={classes.chip} />
           
           <Tooltip id="apps-icon" title="Users">
             <IconButton

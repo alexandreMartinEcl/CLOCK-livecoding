@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {AppBar, Tabs, Tab, withStyles} from 'material-ui';
+import {AppBar, Tabs, withStyles} from 'material-ui';
+import ClosableTab from './ClosableTab.js';
 
 const styles = {};
 
@@ -10,11 +11,12 @@ class TabBar extends PureComponent {
     labels: PropTypes.arrayOf(PropTypes.string),
     handleTabChange: PropTypes.func,
     forcedTab: PropTypes.number,
+    closable: PropTypes.bool
   };
 
-  static defaultProps = {
+  /*static defaultProps = {
     labels: ["User 1", "User 2", "User 3"]
-  };
+  };*/
 
   state = {
     selectedTab: 0
@@ -32,15 +34,19 @@ class TabBar extends PureComponent {
     } else {
       tabVal = this.state.selectedTab;
     }
+    
     return (
       <AppBar position="static">
         <Tabs
           value={tabVal}
           onChange={this.handleChange}
-          fullWidth>
-
-          {this.props.labels.map((label, i) => <Tab label={label} />)}
-        </Tabs>
+          fullWidth
+          >     
+          {this.props.labels.map((label, i) => (
+            <ClosableTab label={label} closable={this.props.closable && i !== 0} />
+          ))}        
+        </Tabs>  
+        
       </AppBar>
     );
   }
