@@ -82,6 +82,17 @@ module.exports.findUserCode = (req, res) => {
         result.user = usr;
       }
     });
+
+    if (result.user.role !== 'intervenant'
+      && req.user.role !== 'intervenant'
+      && req.user.role !== 'administrateur') {
+      res.status(401)
+        .send({
+          success: false,
+          message: 'Update not allowed',
+        });
+    }
+
     return res.send({
       success: true,
       result,
@@ -92,6 +103,17 @@ module.exports.findUserCode = (req, res) => {
 module.exports.updateCodeInSession = (req, res) => {
   console.log(`Updating the code for user ${req.user.username} in session ${req.params.hash}`);
   const { html, css, js } = req.body;
+
+  if (req.user.username !== req.params.username
+    && req.user.role !== 'intervenant'
+    && req.user.role !== 'administrateur') {
+    res.status(401)
+      .send({
+        success: false,
+        message: 'Update not allowed',
+      });
+  }
+
   let updatedUsers = {};
   Session.findOne({ hash: req.params.hash }, (err, session) => {
     if (err) {

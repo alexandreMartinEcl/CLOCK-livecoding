@@ -9,6 +9,7 @@ import UsersMenu from './Session/UsersMenu';
 import IdentityResp from './Auth/IdentityResp';
 import CodePages from './Session/CodePages';
 import { getUserCode } from '../repository/user.repository';
+import { downloadZip } from '../repository/zip.repository';
 
 const styles = theme => ({
   root: {
@@ -78,6 +79,55 @@ class Content extends PureComponent {
     this.setState({currentUser: user});
   }
 
+  refreshUser = async (username) => {
+    console.log(`Updating ${username}'s code`);
+    const res = await getUserCode(this.state.session.hash, username);
+
+    console.log("Result: ");
+    console.log(res);
+
+    if (res.success) {
+      const { user } = res.result;
+      this.updateUserCode(user.user.username, user.html, user.css, user.js);
+    } else {
+      console.log(res.message);
+      alert(res.message);
+    }
+  }
+
+  downloadCode = (username) => {
+    console.log(`Getting ${username}'s zipped code`);
+    var usersC = this.state.usersCodes;
+    var user;
+
+    for(var i=0; i<usersC.length; i++){
+      user = usersC[i];
+
+      if(user.username === username) {
+        var {html, css, js} = user;
+      }
+    }
+    downloadZip(html, css, js, username, this.state.session.hash);
+  }
+
+  updateUserCode = (username, html, css, js) => {
+    console.log(`Updating user ${username} to Content.state`);
+    var usersC = this.state.usersCodes.slice();
+    var user;
+    for(var i=0; i<usersC.length; i++){
+      user = usersC[i];
+
+      if(user.username === username) {
+        user.html = html;
+        user.css = css;
+        user.js = js;
+        usersC[i] = user;
+      }
+    }
+
+    this.setState({usersCodes: usersC});
+  }
+
   addUserCode = (username, title, html, css, js) => {
     console.log(`Adding user ${username} to Content.state`);
     var usersC = this.state.usersCodes.slice();
@@ -92,7 +142,7 @@ class Content extends PureComponent {
   }
 
   removeUserCode = (username) => {
-    console.log(`Removing user ${username} to Content.state`);
+    console.log(`Removing user ${username} from Content.state`);
     var usersC = [];
     this.state.usersCodes.forEach((user)=>{
       if (user.username !== username) {
@@ -101,19 +151,39 @@ class Content extends PureComponent {
     });
     this.setState({usersCodes: usersC});
   }
-    
-  openNewUser = async (username) => {
-    console.log(`Getting new user's code: ${username}`);
-    var alreadySet = false;
+  
+  userAlreadyLoaded = (username) => {
+    var res = false;
 
     this.state.usersCodes.forEach((code) => {
       if (code.username === username) {
-        alreadySet = true;
+        res = true;
       }
     })
+    return res;
+  }
 
-    if (alreadySet) {
+  userNotWatchable = (user) => {
+    if (user.role === 'intervenant') {
+      return true;
+    } else if (this.state.currentUser.role === 'intervenant' || this.state.currentUser.role === 'administrateur') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  openNewUser = async (user) => {
+    const {username} = user;
+    console.log(`Getting new user's code: ${username}`);
+
+    if (this.userAlreadyLoaded(username)) {
       console.log(`Code already here`);
+      return;
+    }
+
+    if (!this.userWatchable(user)) {
+      console.log(`You do not have permission to see `);
       return;
     }
 
@@ -171,6 +241,9 @@ class Content extends PureComponent {
             codes={usersCodes}
             sessionHash={session.hash}
             removeUser={this.removeUserCode}
+            currUserRole={this.state.currentUser.role}
+            refreshFunction={this.refreshUser}
+            dwnldFunction={this.downloadCode}
           />
         </div>
       );

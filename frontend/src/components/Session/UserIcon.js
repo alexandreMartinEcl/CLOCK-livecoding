@@ -36,15 +36,22 @@ class UserIcon extends PureComponent {
     name: PropTypes.string.isRequired,
     userid: PropTypes.string.isRequired,
     getusercallback: PropTypes.func,
+    user: PropTypes.shape({
+      prenom: PropTypes.string,
+      nom: PropTypes.string,
+      username: PropTypes.string,
+      role: PropTypes.string,
+      email: PropTypes.string,
+    })
   };
 
   handleClick = () => {
     console.log(`User ${this.props.name} clicked.`);
-    this.props.getusercallback(this.props.userid);
+    this.props.getusercallback(this.props.user);
   }
 
   render() {
-    const {classes, logo, name, ...baseProps} = this.props;
+    const {classes, logo, user, name, ...baseProps} = this.props;
 
     return (
       <GridListTile {...baseProps}>

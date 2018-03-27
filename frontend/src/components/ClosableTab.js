@@ -9,16 +9,23 @@ class ClosableTab extends PureComponent {
   static propTypes = {
     ...Tab.propTypes,
     label: PropTypes.string.isRequired,
-    closable: PropTypes.bool
+    closable: PropTypes.bool,
+    funcRemoveUser: PropTypes.func,
+    idTab: PropTypes.string,
   };
 
+  removeUser = () => {
+    console.log("Askes for closing user tab");
+    this.props.funcRemoveUser(this.props.idTab);
+  }
+
   render() {
-    const { label, closable, ...baseProps } = this.props;
+    const { label, closable, funcRemoveUser, idTab, ...baseProps } = this.props;
 
     return (
       <Fragment>
         <Tab label={label} {...baseProps} />
-        {closable && <Close color="secondary" />}
+        {closable && <Close onClick={this.removeUser} color="secondary" cursor="pointer"/>}
       </Fragment>
     );
   }

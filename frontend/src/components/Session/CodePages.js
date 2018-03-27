@@ -10,6 +10,7 @@ import 'brace/theme/tomorrow_night';
 import 'brace/ext/language_tools';
 
 import TabBar from '../TabBar';
+import UsersTabBar from './UsersTabBar';
 import { updateCodes } from '../../repository/session.repository';
 
 const styles = theme => ({
@@ -39,8 +40,11 @@ class CodePage extends PureComponent {
             css: PropTypes.string,
             js: PropTypes.string,
         })).isRequired,
+        currUserRole: PropTypes.string.isRequired,
         sessionHash: PropTypes.string.isRequired,
         removeUser: PropTypes.func.isRequired,
+        refreshFunction: PropTypes.func.isRequired,
+        dwnldFunction: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
@@ -64,6 +68,8 @@ class CodePage extends PureComponent {
                 html: '',
                 css: '',
                 js: '',
+                selectedKey: '',
+                codeUpdateOrdered: false,
             }
         ],
         selectedUser: 0,
@@ -85,6 +91,7 @@ class CodePage extends PureComponent {
     componentWillMount(){
         const users = this.props.codes.map((user) => {
             user.selectedKey = "html";
+            user.codeUpdateOrdered = false;
             return user;
         });
         console.log(users[0]);
@@ -97,33 +104,38 @@ class CodePage extends PureComponent {
     }
 
     componentDidUpdate(){
-        console.log("did update");
+        console.log("Code pages did update: loading render");
         if (this.state.users[this.state.selectedUser].selectedKey ==="render") {
-            console.log("we try this");
             this.makeIframe();
         }
     }
 
     handleChange = (code) => {
-        var users = this.state.users.slice();
         const slctUser = this.state.selectedUser;
-        const key = users[slctUser].selectedKey;
-        users[slctUser][key] = code;
-        this.setState( {users: users} );
+        if (slctUser === 0 || this.props.currUserRole === "intervenant") {
+            var users = this.state.users.slice();
+            const key = users[slctUser].selectedKey;
+            users[slctUser][key] = code;
+            this.setState( {users: users} );
 
-        if (slctUser === 0) {
-            if (!this.state.codeUpdateOrdered) {
+            if (!this.state.users[slctUser].codeUpdateOrdered) {
                 console.log(`Launches code update order`)
-                this.setState({codeUpdateOrdered: true});
+                
+                const updatedUsers = this.state.users;
+                updatedUsers[slctUser].codeUpdateOrdered = true;
+                this.setState({users: updatedUsers});                
+//                this.setState({codeUpdateOrdered: true});
                 setTimeout(() => {
-                    this.updateUserCodes()
+                    this.updateUserCodes(slctUser)
                 }, 3000);
             }
+        } else {
+            console.log("Not allowed to update this code");
         }
     }
 
-    updateUserCodes = async () => {
-        const {username, html, css, js} = this.state.users[0]
+    updateUserCodes = async (slctUser) => {
+        const {username, html, css, js} = this.state.users[slctUser]
         const res = await updateCodes(this.props.sessionHash, username, html, css, js);
 
         if (res.success) {
@@ -132,7 +144,11 @@ class CodePage extends PureComponent {
             console.log(res.message);
             alert(res.message);
         }
-        this.setState({codeUpdateOrdered: false});
+        const updatedUsers = this.state.users;
+        updatedUsers[slctUser].codeUpdateOrdered = false;
+        this.setState({users: updatedUsers});                
+
+//        this.setState({codeUpdateOrdered: false});
     }
 
     changePage = (tabValue) => {
@@ -224,11 +240,13 @@ class CodePage extends PureComponent {
         const user = this.state.users[this.state.selectedUser];
         return (
             <div className={this.props.className}>
-                <TabBar 
+                <UsersTabBar 
                     handleTabChange={this.changeUser}
-                    labels={this.props.codes.map( (code) => (code.title))}
-                    closable
-                  />
+                    labels={this.props.codes.map( (code) => ({label: code.title, id: code.username}))}
+                    funcRemoveUser={this.props.removeUser}
+                    refreshFunction={this.props.refreshFunction}
+                    dwnldFunction={this.props.dwnldFunction}
+                />
 
 
                 <TabBar

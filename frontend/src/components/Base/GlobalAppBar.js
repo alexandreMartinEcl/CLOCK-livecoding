@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {AppBar, IconButton, Toolbar, Tooltip, Typography, withStyles} from 'material-ui';
 import {Apps as AppsIcon} from 'material-ui-icons';
-import FileDownload from 'material-ui-icons/FileDownload';
-import Refresh from 'material-ui-icons/Refresh';
-import Button from 'material-ui/Button';
 
 import AppsMenu from './AppsMenu';
 
@@ -70,17 +67,7 @@ class GlobalAppBar extends PureComponent {
           <Typography variant="title" color="inherit" className={classes.flex}>
             {this.props.appTitle}
           </Typography>
-          
-          <Button className={[classes.button, classes.icon]} variant="raised" color="primary">
-          Rafraîchir
-          <Refresh color="white" className={classNames(classes.rightIcon)}/>
-          </Button>
-          
-          <Button className={classes.button} variant="raised" color="secondary">
-          Télécharger
-          <FileDownload className={classNames(classes.rightIcon, classes.iconSmall)} />
-          </Button>
-          
+                    
           <Tooltip id="apps-icon" title="Applications">
             <IconButton
               color="inherit"

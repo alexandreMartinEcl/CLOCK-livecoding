@@ -73,7 +73,7 @@ class UsersMenu extends PureComponent {
         <div className={classes.root}>
           <GridList cellHeight={100} cols={5}>
             {this.state.users.map(user => (
-              <UserIcon key={user.username} logo={logo} name={user.prenom} userid={user.username} getusercallback={this.props.newUser} />
+              <UserIcon key={user.username} logo={logo} user={user} name={user.prenom} userid={user.username} getusercallback={this.props.newUser} />
             ))}
           </GridList>
         </div>
