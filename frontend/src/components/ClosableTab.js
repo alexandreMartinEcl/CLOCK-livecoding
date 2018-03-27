@@ -1,7 +1,10 @@
 import React, { PureComponent, Fragment } from "react";
 import PropTypes from "prop-types";
 import { Tab } from "material-ui";
-import Close from "material-ui-icons/Close";
+//import Close from "material-ui-icons/Close";
+
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 class ClosableTab extends PureComponent {
   static muiName = 'Tab';
@@ -14,9 +17,44 @@ class ClosableTab extends PureComponent {
     idTab: PropTypes.string,
   };
 
-  removeUser = () => {
+  state = {
+    clicked: false,
+  }
+
+  deleteConfirm = () => {
+    confirmAlert({
+      title: 'Confirm',
+      message: 'Remove this tab ?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => this.props.funcRemoveUser(this.props.idTab)
+        },
+        {
+          label: 'Cancel',
+          onClick: () => this.setState({clicked: false})
+        }
+      ]
+    })
+  }
+
+  potentiallyRemoveUser = () => {
     console.log("Askes for closing user tab");
-    this.props.funcRemoveUser(this.props.idTab);
+
+    if (!this.props.closable) {
+      return;
+    }
+
+    if (this.state.clicked) {
+      this.deleteConfirm();
+    } else {
+      this.setState({clicked: true});
+      new Promise(resolve => {
+        setTimeout(() => {
+          this.setState({clicked: false});
+        }, 500)
+      });
+    }
   }
 
   render() {
@@ -24,10 +62,15 @@ class ClosableTab extends PureComponent {
 
     return (
       <Fragment>
-        <Tab label={label} {...baseProps} />
-        {closable && <Close onClick={this.removeUser} color="secondary" cursor="pointer"/>}
+        <Tab label={label} {...baseProps} onClick={this.potentiallyRemoveUser}/>
       </Fragment>
     );
+    // return (
+    //   <Fragment>
+    //     <Tab label={label} {...baseProps} onClick={this.potentiallyRemoveUser}/>
+    //     {closable && <Close onClick={this.removeUser} color="secondary" cursor="pointer"/>}
+    //   </Fragment>
+    // );
   }
 }
 
