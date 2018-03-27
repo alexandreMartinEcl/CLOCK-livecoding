@@ -11,8 +11,8 @@ import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
 
 // Swap base if you want to access online backend with local frontend
- const base = "https://clock-livecoding.ebm.nymous.io";
-//const base = "";
+// const base = "https://clock-livecoding.ebm.nymous.io";
+const base = "";
 
 function localCreateSession(userid, sessionName){
     return new Promise(resolve => {
