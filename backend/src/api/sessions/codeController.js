@@ -101,7 +101,7 @@ module.exports.findUserCode = (req, res) => {
       return res.status(401)
         .send({
           success: false,
-          message: 'Update not allowed',
+          message: 'Access denied',
         });
     }
     return res.send({
