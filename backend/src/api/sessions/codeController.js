@@ -97,13 +97,12 @@ module.exports.findUserCode = (req, res) => {
     if (result.user.role !== 'intervenant'
       && req.user.role !== 'intervenant'
       && req.user.role !== 'administrateur') {
-      res.status(401)
+      return res.status(401)
         .send({
           success: false,
           message: 'Update not allowed',
         });
     }
-
     return res.send({
       success: true,
       result,
