@@ -71,7 +71,7 @@ class GlobalAppBar extends PureComponent {
             {this.props.appTitle}
           </Typography>
           
-          <Button className={classes.button, classes.icon} variant="raised" color="primary">
+          <Button className={[classes.button, classes.icon]} variant="raised" color="primary">
           Rafraîchir
           <Refresh color="white" className={classNames(classes.rightIcon)}/>
           </Button>

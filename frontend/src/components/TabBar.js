@@ -1,11 +1,6 @@
-import React, {PureComponent, Fragment} from 'react';
-import classNames from 'classnames';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {AppBar, Tabs, Tab, withStyles} from 'material-ui';
-import Icon from 'material-ui/Icon';
-import Close from 'material-ui-icons/Close';
-import Refresh from 'material-ui-icons/Refresh';
-import Toolbar from 'material-ui/Toolbar';
+import {AppBar, Tabs, withStyles} from 'material-ui';
 import ClosableTab from './ClosableTab.js';
 
 const styles = {};
@@ -39,8 +34,6 @@ class TabBar extends PureComponent {
     } else {
       tabVal = this.state.selectedTab;
     }
-    
-    const { classes } = this.props;
     
     return (
       <AppBar position="static">

@@ -1,11 +1,7 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Tabs, AppBar } from 'material-ui';
+import { withStyles } from 'material-ui';
 import AceEditor from 'react-ace';
-import Close from 'material-ui-icons/Close';
-import FileDownload from 'material-ui-icons/FileDownload';
-import Refresh from 'material-ui-icons/Refresh';
-import Toolbar from 'material-ui/Toolbar';
 
 import 'brace/mode/html';
 import 'brace/mode/css';
