@@ -1,7 +1,8 @@
 import agent from 'superagent';
 import { checkAuthResponse, getAuthHeaders } from 'ebm-auth/dist/browser';
 
-//const base = "https://clock-livecoding.ebm.nymous.io";
+// Swap base if you want to access online backend with local frontend
+// const base = "https://clock-livecoding.ebm.nymous.io";
 const base = "";
 
 function localCreateSession(userid, sessionName){

@@ -2,7 +2,6 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui';
 import AceEditor from 'react-ace';
-
 import ReactKonami from "react-konami";
 
 import 'brace/mode/html';
@@ -76,6 +75,7 @@ class CodePage extends PureComponent {
         ],
         selectedUser: 0,
         codeUpdateOrdered: false,
+        toasted: false,
         konami: false,
     };
 
@@ -133,6 +133,10 @@ class CodePage extends PureComponent {
                 }, 3000);
             }
         } else {
+            if (!this.state.toasted) {
+                this.setState({toasted: true});
+                alert(`What you write here will note be updated online`);
+            }
             console.log("Not allowed to update this code");
         }
     }
