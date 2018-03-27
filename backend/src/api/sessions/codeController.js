@@ -94,7 +94,8 @@ module.exports.findUserCode = (req, res) => {
       }
     });
 
-    if (result.user.role !== 'intervenant'
+    if (result.user.user.username !== req.user.username
+      && result.user.role !== 'intervenant'
       && req.user.role !== 'intervenant'
       && req.user.role !== 'administrateur') {
       return res.status(401)
