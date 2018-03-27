@@ -34,7 +34,6 @@ router.get('/:hash', sessionController.findOne);
 router.get('/users/:hash', codeController.findAllUsersOfSession);
 router.get('/code/:hash', codeController.findUserSessionInfo);
 router.get('/code/:hash/:username', codeController.findUserCode);
-router.get('/download/:hash/:username', codeController.downloadUserCode);
 
 // post requests
 router.post('/', sessionController.create);

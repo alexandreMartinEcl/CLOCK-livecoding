@@ -2,6 +2,7 @@ const Session = require('./sessionModel');
 
 const crypto = require('crypto');
 
+// Using this function to generate a len-character string in base 62 (base 64 minus + and /)
 const randomValueBase64 = (len) => {
   const randBytes = crypto.randomBytes(Math.ceil((len * 3) / 4));
   return randBytes.toString('base64')
@@ -33,6 +34,7 @@ module.exports.findAll = (req, res) => {
 }; // findAll
 
 module.exports.findOne = (req, res) => {
+  console.log(`Retrieving session information ${req.params.hash}`);
   Session.findOne(
     { hash: req.params.hash },
     (err, session) => {
@@ -83,13 +85,6 @@ module.exports.create = (req, res) => {
       return res.send(err);
     }
 
-    /*
-    result.hash = session.hash;
-    result.creator = session.creator;
-    result.created = session.created;
-    result.name = session.name;
-    result.users = session.users;
-    */
     return res.send({
       success: true,
       result: session,
@@ -184,6 +179,7 @@ module.exports.insertNewUser = (req, res) => {
 }; // insertNewUser
 
 module.exports.removeUser = (req, res) => {
+  console.log(`Removing user ${req.user.username} from session ${req.params.hash}`);
   const {
     username, role, nom, prenom, email,
   } = req.user;
@@ -222,6 +218,7 @@ module.exports.removeUser = (req, res) => {
 }; // removeUser
 
 module.exports.delete = (req, res) => {
+  console.log(`Deleting session ${req.params.hash}`);
   Session.deleteOne(
     { hash: req.params.hash },
     (err) => {
